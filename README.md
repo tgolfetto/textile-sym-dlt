@@ -22,11 +22,9 @@ flow start CreateNetwork
 Sample output:
 ```
 Mon Apr 12 10:35:47 EDT 2021>>> flow start CreateNetwork
-
- ✅   Starting
-➡️   Done
+[...]
 Flow completed with result: 
-A network was created with NetworkID: 121577cf-30bf-4e20-9c7d-97f0b4628b06  <- This is what you need in Step 2
+A network was created with NetworkID: <xxxx-xxxx-NETWORK-ID-xxxxx>  <- This is what you need in Step 2
 ```
 **Step 2:** 2 non-member makes the request to join the network. Fill in the networkId with what was return from Step1
 ```
@@ -37,30 +35,38 @@ flow start RequestMembership authorisedParty: NetworkOperator, networkId: <xxxx-
 flow start QueryAllMembers
 ```
 **Step 4:** In this step, Network Operator will activate the pending memberships
-Insurance: fill in the Insurance node MembershipId that is display in the previous query
+Textile manufacturing firm: fill in the node MembershipId that is display in the previous query
 ```
-flow start ActiveMembers membershipId: <xxxx-xxxx-INSURANCE-ID-xxxxx>
+flow start ActiveMembers membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>
 ```
-CarePro: fill in the CarePro node MembershipId that is display in the previous query
+Certifier: fill in the MembershipId that is display in the previous query
 ```
-flow start ActiveMembers membershipId: <xxxx-xxxx-CAREPRO-ID-xxxxx>
+flow start ActiveMembers membershipId: <xxxx-xxxx-CERTIFIER-ID-xxxxx>
+```
+Municipality: fill in the MembershipId that is display in the previous query
+```
+flow start ActiveMembers membershipId: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>
 ```
 
 **Step 5:** Admin create subgroup and add group members.
 ```
-flow start CreateNetworkSubGroup networkId: <xxxx-FROM-STEP-ONE-xxxxx>, groupName: APAC_Insurance_Alliance, groupParticipants: [<xxxx-NETWORKOPERATOR-ID-xxxxx>, <xxxx-xxxx-INSURANCE-ID-xxxxx>, <xxxx-xxxx-CAREPRO-ID-xxxxx>]
+flow start CreateNetworkSubGroup networkId: <xxxx-FROM-STEP-ONE-xxxxx>, groupName: Prato_Textile_District, groupParticipants: [<xxxx-NETWORKOPERATOR-ID-xxxxx>, <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, <xxxx-xxxx-CERTIFIER-ID-xxxxx>, <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>]
 ```
 **Step 6:** Admin assign business identity to a member.
 ```
-flow start AssignBNIdentity firmType: InsuranceFirm, membershipId: <xxxx-xxxx-INSURANCE-ID-xxxxx>, bnIdentity: APACIN76CZX
+flow start AssignBNIdentity firmType: TextileFirm, membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, bnIdentity: PRATOT76CZX
 ```
 **Step 7:** Admin assign business identity to the second member
 ```
-flow start AssignBNIdentity firmType: CareProvider, membershipId: <xxxx-xxxx-CAREPRO-ID-xxxxx>, bnIdentity: APACCP44OJS
+flow start AssignBNIdentity firmType: Certifier, membershipId: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, bnIdentity: PRATOC44OJS
 ```
-**Step 8:** Admin assign business identity related ROLE to the member.
+**Step 8:** Admin assign business identity to the third member
 ```
-flow start AssignPolicyIssuerRole membershipId: <xxxx-xxxx-INSURANCE-ID-xxxxx>, networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>
+flow start AssignBNIdentity firmType: Municipality, membershipId: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, bnIdentity: PRATOM35OJS
+```
+**Step 9:** Admin assign business identity related ROLE to the member.
+```
+flow start AssignTextileDataSharingRole membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>
 ```
 Now to see our membership states, we can run these vault queries.
 ```
@@ -69,11 +75,11 @@ run vaultQuery contractStateType: net.corda.bn.states.MembershipState
 ```
 -------------------Network setup is done, and business flow begins--------------------------
 
-**Step 9:** The insurance Company will issue a policy to insuree. The flow initiator (the insurance company) has to be a member of the Business network, has to have a insuranceIdentity, and has to have issuer Role, and has to have issuance permission.
+**Step 10:** A textile firm will share data to the certifier. The flow initiator (the textile manufacturer) has to be a member of the Business network, has to have a TextileFirmIdentity, the permission to share data.
 ```
-flow start IssuePolicyInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, careProvider: CarePro, insuree: PeterLi
+flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, receiver: Certifier, jsonData: test
 ```
-**Step 10:** Query the state from the CarePro node.
+**Step 11:** Query the state from the Certifier node.
 ```
-run vaultQuery contractStateType: net.corda.samples.businessmembership.states.InsuranceState
+run vaultQuery contractStateType: net.corda.samples.businessmembership.states.TextileDataState
 ```
