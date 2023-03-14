@@ -1,5 +1,7 @@
-# textile-sym-dlt
-Digital Ledger Technology to foster Industrial Symbiosis in textile manufacturing
+### textile-sym-dlt: Textile Symbiosis Digital Ledger Technology
+Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textile manufacturing districts
+
+![Screenshot](nodeGraph.png)
 
 ### Usage
 
@@ -35,17 +37,17 @@ flow start RequestMembership authorisedParty: NetworkOperator, networkId: <xxxx-
 flow start QueryAllMembers
 ```
 **Step 4:** In this step, Network Operator will activate the pending memberships
-Textile manufacturing firm: fill in the node MembershipId that is display in the previous query
+Textile manufacturing firm: fill in the node MembershipId that is display in the previous query for each firm
 ```
-flow start ActiveMembers membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>
+flow start ActivateMember membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>
 ```
 Certifier: fill in the MembershipId that is display in the previous query
 ```
-flow start ActiveMembers membershipId: <xxxx-xxxx-CERTIFIER-ID-xxxxx>
+flow start ActivateMember membershipId: <xxxx-xxxx-CERTIFIER-ID-xxxxx>
 ```
 Municipality: fill in the MembershipId that is display in the previous query
 ```
-flow start ActiveMembers membershipId: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>
+flow start ActivateMember membershipId: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>
 ```
 
 **Step 5:** Admin create subgroup and add group members.
@@ -81,5 +83,5 @@ flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, rec
 ```
 **Step 11:** Query the state from the Certifier node.
 ```
-run vaultQuery contractStateType: net.corda.samples.businessmembership.states.TextileDataState
+run vaultQuery contractStateType: it.polimi.tgolfetto.states.TextileDataState
 ```
