@@ -14,10 +14,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import static org.junit.Assert.assertEquals;
 
 public class FlowTests {
     private MockNetwork network;
@@ -116,14 +119,13 @@ public class FlowTests {
         System.out.println(future.get());
         storedMembershipState = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(1).getState().getData();
-        System.out.println("### activateMemberTest: " + storedMembershipState);
+        System.out.println("### activateMemberTest: " + storedMembershipState.getStatus().toString());
         assert(storedMembershipState.getStatus().toString().equals("ACTIVE"));
     }
 
 
     @Test
-    public void createNetworkSubGroupTest(){
-        /*
+    public void createNetworkSubGroupTest() throws ExecutionException, InterruptedException {
         CreateNetwork flow = new CreateNetwork();
         networkOperator.startFlow(flow);
         network.runNetwork();
@@ -135,9 +137,18 @@ public class FlowTests {
         network.runNetwork();
         storedMembershipState = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(1).getState().getData();
-        ActivateMember activateMemberFlow = new ActivateMember(new UniqueIdentifier(storedMembershipState.getNetworkId()));
+        ActivateMember activateMemberFlow = new ActivateMember(storedMembershipState.getLinearId());
         networkOperator.startFlow(activateMemberFlow);
         network.runNetwork();
-         */
+        UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(new UniqueIdentifier[]{networkOperatorMembershipId, storedMembershipState.getLinearId()})));
+        Future<String> res = networkOperator.startFlow(createNetworkSubGroupFlow);
+        network.runNetwork();
+        String resString = res.get();
+        System.out.println("### createNetworkSubGroupTest: " + resString);
+        assert(resString.contains("GroupName") && resString.contains(networkOperatorMembershipId.toString()) && resString.contains(storedMembershipState.getLinearId().toString()));
     }
+
+
 }
