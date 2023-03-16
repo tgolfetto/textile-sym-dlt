@@ -41,19 +41,19 @@ public class AssignBNIdentity extends FlowLogic<String> {
         // Obtain a reference to a notary we wish to use.
         final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
         // Check which BN identity we wish to apply and assign it
-        if (this.firmType.equals(BUSINESS_NET_IDENTITIES.TextileFirm)) {
+        if (this.firmType.equals(BUSINESS_NET_IDENTITIES.TextileFirm.toString())) {
             TextileFirmIdentity textileFirmIdentity = new TextileFirmIdentity(bnIdentity);
             if (!textileFirmIdentity.isValid()) {
                 throw new IllegalArgumentException(bnIdentity + " in not a valid Textile Firm Identity");
             }
             subFlow(new ModifyBusinessIdentityFlow(membershipId, textileFirmIdentity, notary));
-        } else if (this.firmType.equals(BUSINESS_NET_IDENTITIES.Certifier)) {
+        } else if (this.firmType.equals(BUSINESS_NET_IDENTITIES.Certifier.toString())) {
             CertifierIdentity certifierIdentity = new CertifierIdentity(bnIdentity);
             if (!certifierIdentity.isValid()) {
                 throw new IllegalArgumentException(bnIdentity + " in not a valid Certifier Identity");
             }
             subFlow(new ModifyBusinessIdentityFlow(membershipId, certifierIdentity, notary));
-        } else if (this.firmType.equals(BUSINESS_NET_IDENTITIES.Municipality)) {
+        } else if (this.firmType.equals(BUSINESS_NET_IDENTITIES.Municipality.toString())) {
             MunicipalityIdentity municipalityIdentity = new MunicipalityIdentity(bnIdentity);
             if (!municipalityIdentity.isValid()) {
                 throw new IllegalArgumentException(bnIdentity + " in not a valid Municipality Identity");

@@ -2,13 +2,11 @@ package it.polimi.tgolfetto;
 
 import com.google.common.collect.ImmutableList;
 import it.polimi.tgolfetto.flows.membershipFlows.*;
+import it.polimi.tgolfetto.states.TextileFirmIdentity;
 import net.corda.bn.states.MembershipState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.CordaX500Name;
-import net.corda.core.node.services.Vault;
-import net.corda.core.node.services.vault.QueryCriteria;
-import net.corda.testing.core.TestIdentity;
 import net.corda.testing.node.*;
 import org.junit.After;
 import org.junit.Before;
@@ -68,7 +66,7 @@ public class FlowTests {
     @Test
     public void requestMembershipTest() {
         CreateNetwork flow = new CreateNetwork();
-        Future<String> future = networkOperator.startFlow(flow);
+        networkOperator.startFlow(flow);
         network.runNetwork();
         MembershipState storedMembershipState = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(0).getState().getData();
@@ -147,7 +145,70 @@ public class FlowTests {
         network.runNetwork();
         String resString = res.get();
         System.out.println("### createNetworkSubGroupTest: " + resString);
-        assert(resString.contains("GroupName") && resString.contains(networkOperatorMembershipId.toString()) && resString.contains(storedMembershipState.getLinearId().toString()));
+        assert (resString.contains("GroupName") && resString.contains(networkOperatorMembershipId.toString()) && resString.contains(storedMembershipState.getLinearId().toString()));
+    }
+
+    @Test
+    public void assignBNIdentityTest() {
+        CreateNetwork flow = new CreateNetwork();
+        networkOperator.startFlow(flow);
+        network.runNetwork();
+        MembershipState storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData();
+        String networkId = storedMembershipState.getNetworkId();
+        RequestMembership requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        textileFirm.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        UniqueIdentifier textileFirmMembershipId = storedMembershipState.getLinearId();
+        ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+        UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(new UniqueIdentifier[]{networkOperatorMembershipId, textileFirmMembershipId})));
+        networkOperator.startFlow(createNetworkSubGroupFlow);
+        network.runNetwork();
+        AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("TextileFirm", textileFirmMembershipId, "PRATOT65LWD");
+        networkOperator.startFlow(assignBNIdentityFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        assert (storedMembershipState.getIdentity().getBusinessIdentity() instanceof it.polimi.tgolfetto.states.TextileFirmIdentity);
+    }
+
+    @Test
+    public void assignTextileDataSharingRoleTest () {
+        CreateNetwork flow = new CreateNetwork();
+        networkOperator.startFlow(flow);
+        network.runNetwork();
+        MembershipState storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData();
+        String networkId = storedMembershipState.getNetworkId();
+        RequestMembership requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        textileFirm.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        UniqueIdentifier textileFirmMembershipId = storedMembershipState.getLinearId();
+        ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+        UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(new UniqueIdentifier[]{networkOperatorMembershipId, textileFirmMembershipId})));
+        networkOperator.startFlow(createNetworkSubGroupFlow);
+        network.runNetwork();
+        AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("TextileFirm", textileFirmMembershipId, "PRATOT65LWD");
+        networkOperator.startFlow(assignBNIdentityFlow);
+        network.runNetwork();
+        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        assert(storedMembershipState.getRoles().toArray()[0] instanceof TextileFirmIdentity.TextileDataSharingRole);
     }
 
 
