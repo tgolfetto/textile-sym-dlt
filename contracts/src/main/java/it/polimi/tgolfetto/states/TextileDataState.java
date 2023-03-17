@@ -1,6 +1,7 @@
 package it.polimi.tgolfetto.states;
 
 import it.polimi.tgolfetto.contracts.TextileDataContract;
+import it.polimi.tgolfetto.model.TextileData;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.LinearState;
@@ -11,24 +12,27 @@ import net.corda.core.serialization.ConstructorForDeserialization;
 import it.polimi.tgolfetto.contracts.TextileDataContract;
 import org.jetbrains.annotations.NotNull;
 
+import javax.script.ScriptException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @BelongsToContract(TextileDataContract.class)
 public class TextileDataState implements LinearState {
     private Party sender;
+    private UniqueIdentifier senderId;
     private Party receiver;
     private String networkId;
-    private UniqueIdentifier linearId;
-    private String jsonData;
+    private TextileData data;
+
 
     @ConstructorForDeserialization
-    public TextileDataState(Party sender, Party receiver, String networkId, UniqueIdentifier linearId, String jsonData) {
+    public TextileDataState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String jsonData) throws ScriptException {
         this.sender = sender;
         this.receiver = receiver;
         this.networkId = networkId;
-        this.linearId = linearId;
-        this.jsonData = jsonData;
+        this.senderId = senderId;
+        this.data = TextileData.fromJson(jsonData);
     }
 
     public Party getSender() {
@@ -43,19 +47,30 @@ public class TextileDataState implements LinearState {
         return networkId;
     }
 
-    public String getJsonData() {
-        return jsonData;
+    public TextileData getData() {
+        return data;
     }
 
     @NotNull
     @Override
     public UniqueIdentifier getLinearId() {
-        return this.linearId;
+        return this.senderId;
     }
 
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        return null;
+        return Arrays.asList(new Party[]{sender, receiver});
+    }
+
+    @Override
+    public String toString() {
+        return "TextileDataState{" +
+                "sender=" + sender +
+                ", senderId=" + senderId +
+                ", receiver=" + receiver +
+                ", networkId='" + networkId + '\'' +
+                ", data='" + data + '\'' +
+                '}';
     }
 }

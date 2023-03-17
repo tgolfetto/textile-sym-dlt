@@ -22,6 +22,7 @@ import it.polimi.tgolfetto.states.TextileDataState;
 import it.polimi.tgolfetto.states.TextileFirmIdentity;
 import org.jetbrains.annotations.Nullable;
 
+import javax.script.ScriptException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
@@ -35,18 +36,23 @@ public class SendTextileData {
     public static class SendTextileDataInitiator extends FlowLogic<SignedTransaction> {
 
         private String networkId;
+
+        private UniqueIdentifier senderId;
         private Party receiver;
+
         private String jsonData;
 
         /**
          * Send a json collection of data to a Certifier or Municipality
          *
          * @param networkId
+         * @param senderId
          * @param receiver
          * @param jsonData
          */
-        public SendTextileDataInitiator(String networkId, Party receiver, String jsonData) {
+        public SendTextileDataInitiator(String networkId, UniqueIdentifier senderId, Party receiver, String jsonData) {
             this.networkId = networkId;
+            this.senderId = senderId;
             this.receiver = receiver;
             this.jsonData = jsonData;
         }
@@ -57,7 +63,12 @@ public class SendTextileData {
             // Obtain a reference to a notary we wish to use.
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             businessNetworkFullVerification(this.networkId, getOurIdentity(), this.receiver);
-            TextileDataState outputState = new TextileDataState(getOurIdentity(), this.receiver, networkId, UniqueIdentifier.Companion.fromString("TEST"), this.jsonData);
+            TextileDataState outputState = null;
+            try {
+                outputState = new TextileDataState(getOurIdentity(), this.senderId, this.receiver, networkId, this.jsonData);
+            } catch (ScriptException e) {
+                throw new RuntimeException(e);
+            }
             BNService bnService = getServiceHub().cordaService(BNService.class);
             TransactionBuilder txBuilder = new TransactionBuilder(notary)
                     .addOutputState(outputState)

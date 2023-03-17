@@ -68,7 +68,7 @@ public class TextileDataContract implements Contract {
 
             require.using("Receiver should be active member of Business Network with "+networkId, receiverMembership.isActive());
             require.using("Receiver(Certifier/Municipality) should have business identity of FirmIdentity type",
-                    receiverMembership.getIdentity().getBusinessIdentity().getClass().equals(CertifierIdentity.class) && receiverMembership.getIdentity().getBusinessIdentity().getClass().equals(MunicipalityIdentity.class));
+                    receiverMembership.getIdentity().getBusinessIdentity().getClass().equals(CertifierIdentity.class) || receiverMembership.getIdentity().getBusinessIdentity().getClass().equals(MunicipalityIdentity.class));
             return null;
         });
     }
