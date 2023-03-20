@@ -1,6 +1,7 @@
 package it.polimi.tgolfetto.states;
 
 import it.polimi.tgolfetto.contracts.CertificationContract;
+import it.polimi.tgolfetto.model.SMC;
 import it.polimi.tgolfetto.model.TextileData;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
@@ -10,6 +11,8 @@ import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
+import javax.script.ScriptException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,19 +23,33 @@ public class CertificationState implements LinearState {
     private final UniqueIdentifier senderId;
     private final Party receiver;
     private final String networkId;
-    private final String certification;
+    private boolean certified;
+    private ArrayList<String> errors;
 
     @ConstructorForDeserialization
-    public CertificationState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String certification) {
+    public CertificationState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId) {
         this.sender = sender;
         this.receiver = receiver;
         this.networkId = networkId;
         this.senderId = senderId;
-        this.certification = certification;
+        this.certified = false;
+        this.errors = new ArrayList<String>();
     }
 
-    public static String evaluateScore(TextileData[] textileData, String criteria){
-        return "C";
+    public void evaluateScore(TextileData textileData, String criteria) throws ScriptException {
+        TextileData certificationCriteria = TextileData.fromJson(criteria);
+        ArrayList<SMC> textileSMC = textileData.getAllSMC();
+        ArrayList<SMC> criteriaSMC = certificationCriteria.getAllSMC();
+        for (int i = 0; i < textileSMC.size(); i++) {
+            ArrayList<Double> textileValues = textileSMC.get(i).getAllValues();
+            ArrayList<Double> criteriaValues = criteriaSMC.get(i).getAllValues();
+            for (int j = 0; j < textileValues.size(); j++) {
+                if (textileValues.get(j).compareTo(criteriaValues.get(j)) > 0) {
+                    this.errors.add("Error in value [" + j + "] of " + textileSMC.get(i).toString());
+                }
+            }
+        }
+        this.certified = this.errors.size() == 0;
     }
 
     public Party getSender() {
@@ -43,12 +60,16 @@ public class CertificationState implements LinearState {
         return receiver;
     }
 
-    public String getNetworkId() {
-        return networkId;
+    public boolean isCertified() {
+        return certified;
     }
 
-    public String getCertification() {
-        return certification;
+    public ArrayList<String> getErrors() {
+        return errors;
+    }
+
+    public String getNetworkId() {
+        return networkId;
     }
 
     @NotNull
@@ -65,12 +86,13 @@ public class CertificationState implements LinearState {
 
     @Override
     public String toString() {
-        return "Certification{" +
+        return "CertificationState{" +
                 "sender=" + sender +
                 ", senderId=" + senderId +
                 ", receiver=" + receiver +
                 ", networkId='" + networkId + '\'' +
-                ", certification='" + certification + '\'' +
+                ", certified=" + certified +
+                ", errors=" + errors +
                 '}';
     }
 }

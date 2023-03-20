@@ -4,6 +4,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class TextileData implements Serializable {
@@ -108,6 +109,21 @@ public class TextileData implements Serializable {
 
     public SMC getSMC5_solidFlow() {
         return SMC5_solidFlow;
+    }
+    
+    public ArrayList<SMC> getAllSMC(){
+        ArrayList<SMC> result = new ArrayList<SMC>();
+        result.add(this.SMC1_enzymatic);
+        result.add(this.SMC1_antibodyBased);
+        result.add(this.SMC2_arsenic );
+        result.add(this.SMC2_aox );
+        result.add(this.SMC2_ph );
+        result.add(this.SMC3_voc);
+        result.add(this.SMC3_no2);
+        result.add(this.SMC3_formaldehyde );
+        result.add(this.SMC4_renewableEnergyPerc );
+        result.add(this.SMC5_solidFlow );
+        return result;
     }
 }
 

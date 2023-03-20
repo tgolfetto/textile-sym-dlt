@@ -1,6 +1,7 @@
 package it.polimi.tgolfetto.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class SMC implements Serializable {
@@ -77,5 +78,16 @@ public class SMC implements Serializable {
 
     public double getCuttingSewingValue() {
         return cuttingSewingValue;
+    }
+
+    public ArrayList<Double> getAllValues(){
+        ArrayList<Double> result = new  ArrayList<Double>();
+        result.add(this.naturalFiberManufacturingValue);
+        result.add(this.syntheticFiberManufacturingValue);
+        result.add(this.spinningValue);
+        result.add(this.weavingValue);
+        result.add(this.dyeingValue);
+        result.add(this.cuttingSewingValue);
+        return result;
     }
 }
