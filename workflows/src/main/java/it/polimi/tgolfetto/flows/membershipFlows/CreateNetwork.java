@@ -23,6 +23,6 @@ public class CreateNetwork extends FlowLogic<String> {
     public String call() throws FlowException {
         UniqueIdentifier networkId = new UniqueIdentifier();
         subFlow(new CreateBusinessNetworkFlow(networkId, null, new UniqueIdentifier(), null, null));
-        return "\nA network was created with NetworkID: " + networkId.toString();
+        return "\nA network was created with NetworkID: " + networkId;
     }
 }

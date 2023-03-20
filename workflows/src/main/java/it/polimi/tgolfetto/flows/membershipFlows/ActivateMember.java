@@ -12,7 +12,7 @@ import net.corda.core.identity.Party;
 @StartableByRPC
 public class ActivateMember extends FlowLogic<String> {
 
-    private UniqueIdentifier membershipId;
+    private final UniqueIdentifier membershipId;
 
     /**
      * Activate a member that requested to join the network

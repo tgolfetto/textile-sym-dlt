@@ -10,8 +10,8 @@ import net.corda.core.identity.Party;
 @StartableByRPC
 public class RequestMembership extends FlowLogic<String>{
 
-    private Party authorisedParty;
-    private String networkId;
+    private final Party authorisedParty;
+    private final String networkId;
 
     /**
      * Request to a Network Operator to join his network

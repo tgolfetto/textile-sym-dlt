@@ -14,7 +14,7 @@ import java.util.HashSet;
 @CordaSerializable
 public class MunicipalityIdentity implements BNIdentity {
 
-    private String municipalityCode;
+    private final String municipalityCode;
 
     public MunicipalityIdentity(String municipalityCode) {
         this.municipalityCode = municipalityCode;

@@ -19,9 +19,9 @@ public class AssignBNIdentity extends FlowLogic<String> {
         Certifier,
         Municipality
     }
-    private String firmType;
-    private UniqueIdentifier membershipId;
-    private String bnIdentity;
+    private final String firmType;
+    private final UniqueIdentifier membershipId;
+    private final String bnIdentity;
 
     /**
      * Assign a firm type and a business identity to the member

@@ -20,8 +20,8 @@ import java.util.Set;
 @StartableByRPC
 public class AssignTextileDataSharingRole extends FlowLogic<SignedTransaction> {
 
-    private UniqueIdentifier membershipId;
-    private String networkId;
+    private final UniqueIdentifier membershipId;
+    private final String networkId;
 
     /**
      * Assing to the member of a network the role of textile data sharing

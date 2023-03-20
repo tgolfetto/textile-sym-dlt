@@ -3,9 +3,10 @@ package it.polimi.tgolfetto.model;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.Serializable;
 import java.util.Map;
 
-public class TextileData {
+public class TextileData implements Serializable {
     /*
     Sustainability Macro Categories (SMCs) contained into the Sustainability Data Matrix developed by UNECE:
     - Hazardous chemicals (SMC 1)
@@ -15,16 +16,16 @@ public class TextileData {
     - Solid waste (SMC 5)
      */
 
-    private SMC SMC1_enzymatic; //Phthalates
-    private SMC SMC1_antibodyBased; //Organotin compounds
-    private SMC SMC2_arsenic; //Arsenic
-    private SMC SMC2_aox; //Halogenated Organic Compounds
-    private SMC SMC2_ph; //PH of wastewater
-    private SMC SMC3_voc; //Volatile organic compounds
-    private SMC SMC3_no2; //Nitrogen dioxide
-    private SMC SMC3_formaldehyde; //Formaldehyde
-    private SMC SMC4_renewableEnergyPerc; //% renewable energy on total energy used
-    private SMC SMC5_solidFlow; //% of regenerated fibers in input/output
+    private final SMC SMC1_enzymatic; //Phthalates
+    private final SMC SMC1_antibodyBased; //Organotin compounds
+    private final SMC SMC2_arsenic; //Arsenic
+    private final SMC SMC2_aox; //Halogenated Organic Compounds
+    private final SMC SMC2_ph; //PH of wastewater
+    private final SMC SMC3_voc; //Volatile organic compounds
+    private final SMC SMC3_no2; //Nitrogen dioxide
+    private final SMC SMC3_formaldehyde; //Formaldehyde
+    private final SMC SMC4_renewableEnergyPerc; //% renewable energy on total energy used
+    private final SMC SMC5_solidFlow; //% of regenerated fibers in input/output
 
     public TextileData(SMC SMC1_enzymatic, SMC SMC1_antibodyBased, SMC SMC2_arsenic, SMC SMC2_aox, SMC SMC2_ph, SMC SMC3_voc, SMC SMC3_no2, SMC SMC3_formaldehyde, SMC SMC4_renewableEnergyPerc, SMC SMC5_solidFlow) {
         this.SMC1_enzymatic = SMC1_enzymatic;

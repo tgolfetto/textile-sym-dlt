@@ -1,6 +1,7 @@
 package it.polimi.tgolfetto.states;
 
-import it.polimi.tgolfetto.contracts.TextileDataContract;
+import it.polimi.tgolfetto.contracts.CertificationContract;
+import it.polimi.tgolfetto.model.TextileData;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -9,25 +10,29 @@ import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-@BelongsToContract(TextileDataContract.class)
-public class TextileDataState implements LinearState, Serializable {
+@BelongsToContract(CertificationContract.class)
+public class CertificationState implements LinearState {
+
     private final Party sender;
     private final UniqueIdentifier senderId;
     private final Party receiver;
     private final String networkId;
-    private final String jsonData;
+    private final String certification;
 
     @ConstructorForDeserialization
-    public TextileDataState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String jsonData) {
+    public CertificationState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String certification) {
         this.sender = sender;
         this.receiver = receiver;
         this.networkId = networkId;
         this.senderId = senderId;
-        this.jsonData = jsonData;
+        this.certification = certification;
+    }
+
+    public static String evaluateScore(TextileData[] textileData, String criteria){
+        return "C";
     }
 
     public Party getSender() {
@@ -42,10 +47,9 @@ public class TextileDataState implements LinearState, Serializable {
         return networkId;
     }
 
-    public String getJsonData() {
-        return jsonData;
+    public String getCertification() {
+        return certification;
     }
-
 
     @NotNull
     @Override
@@ -61,12 +65,12 @@ public class TextileDataState implements LinearState, Serializable {
 
     @Override
     public String toString() {
-        return "TextileDataState{" +
+        return "Certification{" +
                 "sender=" + sender +
                 ", senderId=" + senderId +
                 ", receiver=" + receiver +
                 ", networkId='" + networkId + '\'' +
-                ", jsonData='" + jsonData + '\'' +
+                ", certification='" + certification + '\'' +
                 '}';
     }
 }

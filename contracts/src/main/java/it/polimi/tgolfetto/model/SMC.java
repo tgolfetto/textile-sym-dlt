@@ -1,14 +1,15 @@
 package it.polimi.tgolfetto.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class SMC {
-    private double naturalFiberManufacturingValue;
-    private double syntheticFiberManufacturingValue;
-    private double spinningValue;
-    private double weavingValue;
-    private double dyeingValue;
-    private double cuttingSewingValue;
+public class SMC implements Serializable {
+    private final double naturalFiberManufacturingValue;
+    private final double syntheticFiberManufacturingValue;
+    private final double spinningValue;
+    private final double weavingValue;
+    private final double dyeingValue;
+    private final double cuttingSewingValue;
 
     @Override
     public String toString() {

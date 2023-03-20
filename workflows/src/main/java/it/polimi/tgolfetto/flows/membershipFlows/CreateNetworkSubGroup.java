@@ -13,9 +13,9 @@ import java.util.Set;
 @StartableByRPC
 public class CreateNetworkSubGroup extends FlowLogic<String> {
 
-    private String networkId;
-    private String groupName;
-    private Set<UniqueIdentifier> groupParticipants;
+    private final String networkId;
+    private final String groupName;
+    private final Set<UniqueIdentifier> groupParticipants;
 
     /**
      * Cretate a subgroup in a business network and adds some participants
@@ -39,7 +39,7 @@ public class CreateNetworkSubGroup extends FlowLogic<String> {
         UniqueIdentifier groupId = new UniqueIdentifier();
         subFlow(new CreateGroupFlow(this.networkId, groupId, this.groupName, this.groupParticipants, notary));
         String result = "\n " + this.groupName + " has created under BN network (" + this.networkId + ")" +
-                "GroupId: " + groupId.toString();
+                "GroupId: " + groupId;
         for (UniqueIdentifier id : groupParticipants) {
             result = result + "\nAdded participants(shown by membershipId): " + id.toString();
         }

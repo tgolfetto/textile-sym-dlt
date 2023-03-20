@@ -15,8 +15,8 @@ import java.util.Objects;
 @CordaSerializable
 public class TextileFirmIdentity implements BNIdentity {
 
-    private String textileFirmIdentityCode;
-    private String iicRegex = "^[a-zA-Z]{6}[0-9a-zA-Z]{2}([0-9a-zA-Z]{3})?$";
+    private final String textileFirmIdentityCode;
+    private final String iicRegex = "^[a-zA-Z]{6}[0-9a-zA-Z]{2}([0-9a-zA-Z]{3})?$";
 
 
     public TextileFirmIdentity(String textileFirmIdentityCode) {

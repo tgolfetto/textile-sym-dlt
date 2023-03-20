@@ -14,8 +14,8 @@ import java.util.HashSet;
 @CordaSerializable
 public class CertifierIdentity implements BNIdentity {
 
-    private String certifierIdentityCode;
-    private String cicRegex = "^[a-zA-Z]{6}[0-9a-zA-Z]{2}([0-9a-zA-Z]{3})?$";
+    private final String certifierIdentityCode;
+    private final String cicRegex = "^[a-zA-Z]{6}[0-9a-zA-Z]{2}([0-9a-zA-Z]{3})?$";
 
     public CertifierIdentity(String certifierIdentityCode) {
         this.certifierIdentityCode = certifierIdentityCode;
