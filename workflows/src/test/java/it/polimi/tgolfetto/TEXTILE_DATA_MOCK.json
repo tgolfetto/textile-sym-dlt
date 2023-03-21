@@ -65,11 +65,11 @@
   },
   "SMC4_renewableEnergyPerc": {
     "naturalFiberManufacturingValue": 0.0,
-    "syntheticFiberManufacturingValue": 10.0,
-    "spinningValue": 20.0,
-    "weavingValue": 13.34,
-    "dyeingValue": 10.0,
-    "cuttingSewingValue": 53.01
+    "syntheticFiberManufacturingValue": 0.10,
+    "spinningValue": 0.20,
+    "weavingValue": 0.13,
+    "dyeingValue": 0.10,
+    "cuttingSewingValue": 0.53
   },
   "SMC5_solidFlow": {
     "naturalFiberManufacturingValue": 21.0,

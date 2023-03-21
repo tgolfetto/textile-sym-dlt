@@ -75,7 +75,7 @@ public class SendCertification {
             CertificationState outputState = null;
             try {
                 outputState = new CertificationState(getOurIdentity(), this.senderId, this.receiver, networkId, false, "");
-                outputState.evaluateScore(textileDatas[0], criteria);
+                outputState.evaluateScore(textileDatas[textileDatas.length - 1], criteria);
             } catch (ScriptException e) {
                 throw new RuntimeException(e);
             }

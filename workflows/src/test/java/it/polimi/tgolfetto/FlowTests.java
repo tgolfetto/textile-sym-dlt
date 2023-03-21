@@ -116,11 +116,11 @@ public class FlowTests {
             "  },\n" +
             "  \"SMC4_renewableEnergyPerc\": {\n" +
             "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
-            "    \"spinningValue\": 20.0,\n" +
-            "    \"weavingValue\": 13.34,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 53.01\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
+            "    \"spinningValue\": 0.20,\n" +
+            "    \"weavingValue\": 0.13,\n" +
+            "    \"dyeingValue\": 0.10,\n" +
+            "    \"cuttingSewingValue\": 0.53\n" +
             "  },\n" +
             "  \"SMC5_solidFlow\": {\n" +
             "    \"naturalFiberManufacturingValue\": 21.0,\n" +
@@ -132,9 +132,9 @@ public class FlowTests {
             "  }\n" +
             "}";
 
-    private final String CERTIFICATION_CRITERIA_MOCK = "{\n" +
+    private final String CORRECT_TEXTILE_DATA_MOCK = "{\n" +
             "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 118.99,\n" +
+            "    \"naturalFiberManufacturingValue\": 128.99,\n" +
             "    \"syntheticFiberManufacturingValue\": 182.23,\n" +
             "    \"spinningValue\": 123.11,\n" +
             "    \"weavingValue\": 105.42,\n" +
@@ -158,11 +158,11 @@ public class FlowTests {
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
+            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "    \"spinningValue\": 2.11,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 1.23,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
@@ -199,11 +199,11 @@ public class FlowTests {
             "  },\n" +
             "  \"SMC4_renewableEnergyPerc\": {\n" +
             "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
-            "    \"spinningValue\": 20.0,\n" +
-            "    \"weavingValue\": 13.34,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 53.01\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
+            "    \"spinningValue\": 0.20,\n" +
+            "    \"weavingValue\": 0.13,\n" +
+            "    \"dyeingValue\": 0.10,\n" +
+            "    \"cuttingSewingValue\": 0.23\n" +
             "  },\n" +
             "  \"SMC5_solidFlow\": {\n" +
             "    \"naturalFiberManufacturingValue\": 21.0,\n" +
@@ -212,6 +212,89 @@ public class FlowTests {
             "    \"weavingValue\": 43.13,\n" +
             "    \"dyeingValue\": 10.0,\n" +
             "    \"cuttingSewingValue\": 41.12\n" +
+            "  }\n" +
+            "}";
+
+    private final String CERTIFICATION_CRITERIA_MOCK = "{\n" +
+            "  \"SMC1_enzymatic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 250.00,\n" +
+            "    \"syntheticFiberManufacturingValue\": 250.00,\n" +
+            "    \"spinningValue\": 250.00,\n" +
+            "    \"weavingValue\": 250.00,\n" +
+            "    \"dyeingValue\": 250.00,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_antibodyBased\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 5.00,\n" +
+            "    \"syntheticFiberManufacturingValue\": 5.00,\n" +
+            "    \"spinningValue\": 5.00,\n" +
+            "    \"weavingValue\": 5.42,\n" +
+            "    \"dyeingValue\": 4.23,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC2_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 50.00,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 50.00,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 50.00,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC2_aox\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 5.00,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 5.00,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 5.00,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC2_ph\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 8.5,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 8.5,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 8.5,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC3_voc\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.50,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.50,\n" +
+            "    \"dyeingValue\": 0.0,\n" +
+            "    \"cuttingSewingValue\": 0.50\n" +
+            "  },\n" +
+            "  \"SMC3_no2\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 40.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 40.00,\n" +
+            "    \"dyeingValue\": 0.0,\n" +
+            "    \"cuttingSewingValue\": 40.00\n" +
+            "  },\n" +
+            "  \"SMC3_formaldehyde\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.05,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.05,\n" +
+            "    \"dyeingValue\": 0.0,\n" +
+            "    \"cuttingSewingValue\": 0.05\n" +
+            "  },\n" +
+            "  \"SMC4_renewableEnergyPerc\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.30,\n" +
+            "    \"spinningValue\": 0.30,\n" +
+            "    \"weavingValue\": 0.30,\n" +
+            "    \"dyeingValue\": 0.30,\n" +
+            "    \"cuttingSewingValue\": 0.30\n" +
+            "  },\n" +
+            "  \"SMC5_solidFlow\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 50.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 50.0,\n" +
+            "    \"weavingValue\": 50.00,\n" +
+            "    \"dyeingValue\": 50.0,\n" +
+            "    \"cuttingSewingValue\": 50.00\n" +
             "  }\n" +
             "}";
 
@@ -541,7 +624,24 @@ public class FlowTests {
         network.runNetwork();
         CertificationState storedCertState = textileFirm.getServices().getVaultService()
                 .queryBy(CertificationState.class).getStates().get(0).getState().getData();
-        assertEquals(storedCertState.getErrors(), "1");
+        assertEquals(storedCertState.getErrors(), "SMC4_renewableEnergyPerc - cuttingSewingValue actual: 0.53 limit: 0.3\n" +
+                "SMC2_aox - naturalFiberManufacturingValue actual: 32.99 limit: 5.0\n" +
+                "SMC2_aox - spinningValue actual: 32.11 limit: 5.0\n" +
+                "SMC2_aox - dyeingValue actual: 21.23 limit: 5.0\n");
+        assertEquals(storedCertState.isCertified(), false);
+        // Send more textile data from TextileFirm to Certifier
+        sendTextileDataInitiatorFlow = new SendTextileData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), CORRECT_TEXTILE_DATA_MOCK);
+        textileFirm.startFlow(sendTextileDataInitiatorFlow);
+        network.runNetwork();
+        // Issue another certification from Certifier to TextileFirm
+        sendCertificationInitiatorFlow = new SendCertification.SendCertificationInitiator(networkId, certifierMembershipId, textileFirm.getInfo().identityFromX500Name(CordaX500Name.parse("O=TextileManufacturer1,L=Prato,C=IT")), CERTIFICATION_CRITERIA_MOCK);
+        certifier.startFlow(sendCertificationInitiatorFlow);
+        network.runNetwork();
+        storedCertState = textileFirm.getServices().getVaultService()
+                .queryBy(CertificationState.class).getStates().get(1).getState().getData();
+        //assertEquals(storedCertState.isCertified(), true);
+        assertEquals(storedCertState.getErrors(), "");
+        assertEquals(storedCertState.isCertified(), true);
     }
 
 }
