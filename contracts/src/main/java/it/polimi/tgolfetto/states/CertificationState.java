@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.script.ScriptException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @BelongsToContract(CertificationContract.class)
@@ -24,32 +25,37 @@ public class CertificationState implements LinearState {
     private final Party receiver;
     private final String networkId;
     private boolean certified;
-    private ArrayList<String> errors;
+    private String errors;
 
     @ConstructorForDeserialization
-    public CertificationState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId) {
+    public CertificationState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, boolean certified, String errors) throws ScriptException {
         this.sender = sender;
         this.receiver = receiver;
         this.networkId = networkId;
         this.senderId = senderId;
-        this.certified = false;
-        this.errors = new ArrayList<String>();
+        this.certified = certified;
+        this.errors = errors;
+
     }
 
     public void evaluateScore(TextileData textileData, String criteria) throws ScriptException {
         TextileData certificationCriteria = TextileData.fromJson(criteria);
-        ArrayList<SMC> textileSMC = textileData.getAllSMC();
-        ArrayList<SMC> criteriaSMC = certificationCriteria.getAllSMC();
-        for (int i = 0; i < textileSMC.size(); i++) {
-            ArrayList<Double> textileValues = textileSMC.get(i).getAllValues();
-            ArrayList<Double> criteriaValues = criteriaSMC.get(i).getAllValues();
-            for (int j = 0; j < textileValues.size(); j++) {
-                if (textileValues.get(j).compareTo(criteriaValues.get(j)) > 0) {
-                    this.errors.add("Error in value [" + j + "] of " + textileSMC.get(i).toString());
+        HashMap<String, SMC> textileMap = textileData.getHashMap();
+        HashMap<String, SMC> criteriaMap = certificationCriteria.getHashMap();
+        for (String SMCName : criteriaMap.keySet()) {
+            SMC textileSMC = textileMap.get(SMCName);
+            SMC criteriaSMC = criteriaMap.get(SMCName);
+            if (textileSMC != null) {
+                HashMap<String, Double> textileValues = textileSMC.getHashMap();
+                HashMap<String, Double> criteriaValues = criteriaSMC.getHashMap();
+                for (String valueName : criteriaValues.keySet()) {
+                    if (textileValues.get(valueName) != null && textileValues.get(valueName).compareTo(criteriaValues.get(valueName)) > 0) {
+                        this.errors += SMCName + " - " + valueName + " actual: " + textileValues.get(valueName) + " limit: " + criteriaValues.get(valueName) + "\n";
+                    }
                 }
             }
         }
-        this.certified = this.errors.size() == 0;
+        this.certified = this.errors.length() == 0;
     }
 
     public Party getSender() {
@@ -64,7 +70,7 @@ public class CertificationState implements LinearState {
         return certified;
     }
 
-    public ArrayList<String> getErrors() {
+    public String getErrors() {
         return errors;
     }
 

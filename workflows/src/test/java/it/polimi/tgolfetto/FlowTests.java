@@ -541,7 +541,7 @@ public class FlowTests {
         network.runNetwork();
         CertificationState storedCertState = textileFirm.getServices().getVaultService()
                 .queryBy(CertificationState.class).getStates().get(0).getState().getData();
-        assertEquals(storedCertState.getErrors().size(), 1);
+        assertEquals(storedCertState.getErrors(), "1");
     }
 
 }

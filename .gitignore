@@ -2,3 +2,7 @@
 .idea/
 build/
 logs/
+workflows/build/
+workflows/bin/
+contracts/bin/
+contracts/build/

@@ -2,6 +2,7 @@ package it.polimi.tgolfetto.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SMC implements Serializable {
@@ -11,6 +12,8 @@ public class SMC implements Serializable {
     private final double weavingValue;
     private final double dyeingValue;
     private final double cuttingSewingValue;
+
+    private final HashMap<String, Double> hashMap;
 
     @Override
     public String toString() {
@@ -41,10 +44,19 @@ public class SMC implements Serializable {
         this.weavingValue = weavingValue;
         this.dyeingValue = dyeingValue;
         this.cuttingSewingValue = cuttingSewingValue;
+        HashMap<String, Double> hashMap = new HashMap<String, Double>();
+        hashMap.put("naturalFiberManufacturingValue", naturalFiberManufacturingValue);
+        hashMap.put("syntheticFiberManufacturingValue", syntheticFiberManufacturingValue);
+        hashMap.put("spinningValue", spinningValue);
+        hashMap.put("weavingValue", weavingValue);
+        hashMap.put("dyeingValue", dyeingValue);
+        hashMap.put("cuttingSewingValue", cuttingSewingValue);
+        this.hashMap = hashMap;
     }
 
     public SMC(Map<String, Double> map) {
         try {
+            this.hashMap = new HashMap<String, Double>(map);
             this.naturalFiberManufacturingValue = map.get("naturalFiberManufacturingValue");
             this.syntheticFiberManufacturingValue = map.get("syntheticFiberManufacturingValue");
             this.spinningValue = map.get("spinningValue");
@@ -80,14 +92,7 @@ public class SMC implements Serializable {
         return cuttingSewingValue;
     }
 
-    public ArrayList<Double> getAllValues(){
-        ArrayList<Double> result = new  ArrayList<Double>();
-        result.add(this.naturalFiberManufacturingValue);
-        result.add(this.syntheticFiberManufacturingValue);
-        result.add(this.spinningValue);
-        result.add(this.weavingValue);
-        result.add(this.dyeingValue);
-        result.add(this.cuttingSewingValue);
-        return result;
+    public HashMap<String, Double> getHashMap() {
+        return hashMap;
     }
 }

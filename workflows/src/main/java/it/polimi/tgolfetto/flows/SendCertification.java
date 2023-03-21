@@ -73,8 +73,8 @@ public class SendCertification {
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             businessNetworkFullVerification(this.networkId, getOurIdentity(), this.receiver);
             CertificationState outputState = null;
-            outputState = new CertificationState(getOurIdentity(), this.senderId, this.receiver, networkId);
             try {
+                outputState = new CertificationState(getOurIdentity(), this.senderId, this.receiver, networkId, false, "");
                 outputState.evaluateScore(textileDatas[0], criteria);
             } catch (ScriptException e) {
                 throw new RuntimeException(e);

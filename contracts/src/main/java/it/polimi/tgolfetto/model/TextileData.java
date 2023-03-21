@@ -5,6 +5,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class TextileData implements Serializable {
@@ -28,6 +29,8 @@ public class TextileData implements Serializable {
     private final SMC SMC4_renewableEnergyPerc; //% renewable energy on total energy used
     private final SMC SMC5_solidFlow; //% of regenerated fibers in input/output
 
+    private final HashMap<String, SMC> hashMap;
+
     public TextileData(SMC SMC1_enzymatic, SMC SMC1_antibodyBased, SMC SMC2_arsenic, SMC SMC2_aox, SMC SMC2_ph, SMC SMC3_voc, SMC SMC3_no2, SMC SMC3_formaldehyde, SMC SMC4_renewableEnergyPerc, SMC SMC5_solidFlow) {
         this.SMC1_enzymatic = SMC1_enzymatic;
         this.SMC1_antibodyBased = SMC1_antibodyBased;
@@ -39,6 +42,18 @@ public class TextileData implements Serializable {
         this.SMC3_formaldehyde = SMC3_formaldehyde;
         this.SMC4_renewableEnergyPerc = SMC4_renewableEnergyPerc;
         this.SMC5_solidFlow = SMC5_solidFlow;
+        HashMap<String, SMC> hashMap = new HashMap<String, SMC>();
+        hashMap.put("SMC1_enzymatic", SMC1_enzymatic);
+        hashMap.put("SMC1_antibodyBased", SMC1_antibodyBased);
+        hashMap.put("SMC2_arsenic", SMC2_arsenic);
+        hashMap.put("SMC2_aox", SMC2_aox);
+        hashMap.put("SMC2_ph", SMC2_ph);
+        hashMap.put("SMC3_voc", SMC3_voc);
+        hashMap.put("SMC3_no2", SMC3_no2);
+        hashMap.put("SMC3_formaldehyde", SMC3_formaldehyde);
+        hashMap.put("SMC4_renewableEnergyPerc", SMC4_renewableEnergyPerc);
+        hashMap.put("SMC5_solidFlow", SMC5_solidFlow);
+        this.hashMap = hashMap;
     }
 
     public static TextileData fromJson(String jsonString) throws ScriptException {
@@ -110,20 +125,9 @@ public class TextileData implements Serializable {
     public SMC getSMC5_solidFlow() {
         return SMC5_solidFlow;
     }
-    
-    public ArrayList<SMC> getAllSMC(){
-        ArrayList<SMC> result = new ArrayList<SMC>();
-        result.add(this.SMC1_enzymatic);
-        result.add(this.SMC1_antibodyBased);
-        result.add(this.SMC2_arsenic );
-        result.add(this.SMC2_aox );
-        result.add(this.SMC2_ph );
-        result.add(this.SMC3_voc);
-        result.add(this.SMC3_no2);
-        result.add(this.SMC3_formaldehyde );
-        result.add(this.SMC4_renewableEnergyPerc );
-        result.add(this.SMC5_solidFlow );
-        return result;
+
+    public HashMap<String, SMC> getHashMap() {
+        return hashMap;
     }
 }
 
