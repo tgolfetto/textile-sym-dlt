@@ -28,7 +28,6 @@ public class TextileData implements Serializable {
     private final SMC SMC3_formaldehyde; //Formaldehyde
     private final SMC SMC4_renewableEnergyPerc; //% non-renewable energy on total energy used
     private final SMC SMC5_solidFlow; //% of regenerated fibers in input/output
-
     private final HashMap<String, SMC> hashMap;
 
     public TextileData(SMC SMC1_enzymatic, SMC SMC1_antibodyBased, SMC SMC2_arsenic, SMC SMC2_aox, SMC SMC2_ph, SMC SMC3_voc, SMC SMC3_no2, SMC SMC3_formaldehyde, SMC SMC4_renewableEnergyPerc, SMC SMC5_solidFlow) {
