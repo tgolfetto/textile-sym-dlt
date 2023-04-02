@@ -86,7 +86,7 @@ run vaultQuery contractStateType: net.corda.bn.states.MembershipState
 
 **Step 10:** A textile firm will share data to the certifier. The flow initiator (the textile manufacturer) has to be a member of the Business network, has to have a TextileFirmIdentity, the permission to share data.
 
-[<JSON-TEXTILE-DATA>](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/TEXTILE_DATA_MOCK.json) contains a mock json with the structure to share textile pollution data retrieved with sensors along the production process
+[JSON-TEXTILE-DATA](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/TEXTILE_DATA_MOCK.json) contains a mock json with the structure to share textile pollution data retrieved with sensors along the production process
 ```
 flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, jsonData: <JSON-TEXTILE-DATA>
 ```
@@ -96,7 +96,7 @@ run vaultQuery contractStateType: it.polimi.tgolfetto.states.TextileDataState
 ```
 **Step 12:** Certifier realease a checks criteria for a textile firm data and eventually release a certification
 
-[<JSON-CERT-CRITERIA>](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/CERTIFICATION_CRITERIA_MOCK.json) contains a mock json with the structure with limits related to the pollution data for getting a certification
+[JSON-CERT-CRITERIA](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/CERTIFICATION_CRITERIA_MOCK.json) contains a mock json with the structure with limits related to the pollution data for getting a certification
 ```
 flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, receiver: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, criteria: <JSON-CERT-CRITERIA>
 ```
