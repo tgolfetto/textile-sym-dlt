@@ -3,6 +3,13 @@ Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textil
 
 ![Screenshot](nodeGraph.png)
 
+### TODO:
+- finish to write and publish related thesis paper
+- test with terminal the big json data flows
+- fix pollution data criteria according to wastewater
+- write contract and state tests
+- better graph image for readme
+
 ### Usage
 
 #### Running the CorDapp
@@ -78,11 +85,43 @@ run vaultQuery contractStateType: net.corda.bn.states.MembershipState
 -------------------Network setup is done, and business flow begins--------------------------
 
 **Step 10:** A textile firm will share data to the certifier. The flow initiator (the textile manufacturer) has to be a member of the Business network, has to have a TextileFirmIdentity, the permission to share data.
-[<JSON-FROM-LINK>](/java/it/polimi/tgolfetto/TEXTILE_DATA_MOCK.json)
+
+[<JSON-TEXTILE-DATA>](/java/it/polimi/tgolfetto/TEXTILE_DATA_MOCK.json) contains a mock json with the structure to share textile pollution data retrieved with sensors along the production process
 ```
-flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, receiver: Certifier, jsonData: <JSON-FROM-LINK>
+flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, jsonData: <JSON-TEXTILE-DATA>
 ```
 **Step 11:** Query the state from the Certifier node.
 ```
 run vaultQuery contractStateType: it.polimi.tgolfetto.states.TextileDataState
+```
+**Step 12:** Certifier realease a checks criteria for a textile firm data and eventually release a certification
+
+[<JSON-CERT-CRITERIA>](/java/it/polimi/tgolfetto/CERTIFICATION_CRITERIA_MOCK.json) contains a mock json with the structure with limits related to the pollution data for getting a certification
+```
+flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, receiver: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, criteria: <JSON-CERT-CRITERIA>
+```
+
+**Step 13:** Textile firm can send waste material request (sending or wishing to receive) to Municipality
+
+- send: true --> A firm is willing to share the waste material with a certain pollution data
+- send: false --> A firm wish to receive the waste material 
+
+```
+flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, textileData: <JSON-TEXTILE-DATA>
+```
+
+**Step 14:** Municipality can communicate to a textile firm which other firms in the network can provide the waste material the need to receive with the related pollution data
+
+```
+flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, textileData: <JSON-TEXTILE-DATA>
+```
+**Step 15:** Query the states from nodes
+
+It's possible to query the following states in order to retrieve all the information exchanged with the previous flows, query has to be performed on the node containing it as for R3 Corda documentation:
+- CertificationState
+- TextileDataState
+- WasteRequestState
+- WasteResponseState
+```
+run vaultQuery contractStateType: it.polimi.tgolfetto.states.WasteResponseState
 ```

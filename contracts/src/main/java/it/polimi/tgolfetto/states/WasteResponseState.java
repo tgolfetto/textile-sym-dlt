@@ -67,9 +67,9 @@ public class WasteResponseState implements LinearState, Serializable {
         return jsonSuppliersList;
     }
 
-    public void suppliersListFromMap(HashMap<String, HashMap<String, Integer>> map) {
+    public void suppliersListFromMap(HashMap<String, HashMap<String, HashMap<Integer, String>>> map) {
         String json = "{" + map.entrySet().stream()
-                .map(e -> "\"" + e.getKey() + "\":{" + e.getValue().entrySet().stream().map(v -> "\"" + v.getKey() + "\":" + v.getValue()).collect(Collectors.joining(", ")) + "}")
+                .map(e -> "\"" + e.getKey() + "\":{" + e.getValue().entrySet().stream().map(v -> "\"" + v.getKey() + "\": {" + v.getValue().entrySet().stream().map(k ->  k.getKey() + ":" + k.getValue()).collect(Collectors.joining(", ")) + "}").collect(Collectors.joining(", ")) + "}")
                 .collect(Collectors.joining(", ")) + "}";
         this.jsonSuppliersList = json;
     }

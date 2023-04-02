@@ -53,14 +53,16 @@ public class SendWasteResponse {
             // Create a map with suppliers for the waste the receiver requested
             List<StateAndRef<WasteRequestState>> states = getServiceHub().getVaultService().queryBy(WasteRequestState.class).getStates();
             WasteRequestState[] requestListMade = states.stream().filter(state -> state.getState().getData().getSender().equals(receiver) && state.getState().getData().isSend() == false).map(state -> state.getState().getData()).toArray(WasteRequestState[]::new);
-            HashMap<String, HashMap<String, Integer>> supplierMap = new HashMap<String, HashMap<String, Integer>>();
+            HashMap<String, HashMap<String, HashMap<Integer, String>>> supplierMap = new HashMap<String, HashMap<String, HashMap<Integer, String>>>();
 
             for (WasteRequestState wasteRequestState : requestListMade) {
                 String typeOfWaste = wasteRequestState.getWasteName();
                 WasteRequestState[] requestListAvailable = states.stream().filter(state -> !state.getState().getData().getSender().equals(receiver) && state.getState().getData().isSend() && state.getState().getData().getWasteName().equals(typeOfWaste)).map(state -> state.getState().getData()).toArray(WasteRequestState[]::new);
-                HashMap<String, Integer> tmp = new HashMap<String, Integer>();
+                HashMap<String, HashMap<Integer, String>> tmp = new HashMap<String, HashMap<Integer, String>>();
                 for (WasteRequestState wasteRequestStateAvailable : requestListAvailable) {
-                    tmp.put(wasteRequestStateAvailable.getSender().toString(), wasteRequestStateAvailable.getQty());
+                    HashMap<Integer, String> tmp2 = new HashMap<Integer, String>();
+                    tmp2.put(wasteRequestStateAvailable.getQty(), wasteRequestStateAvailable.getTextileData());
+                    tmp.put(wasteRequestStateAvailable.getSender().toString(), tmp2);
                 }
                 supplierMap.put(typeOfWaste, tmp);
             }
