@@ -1,6 +1,5 @@
 package it.polimi.tgolfetto.states;
 
-import it.polimi.tgolfetto.contracts.WasteRequestContract;
 import it.polimi.tgolfetto.contracts.WasteResponseContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
@@ -10,9 +9,15 @@ import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @BelongsToContract(WasteResponseContract.class)
 public class WasteResponseState implements LinearState, Serializable {
@@ -20,21 +25,17 @@ public class WasteResponseState implements LinearState, Serializable {
     private final UniqueIdentifier senderId;
     private final Party receiver;
     private final String networkId;
-    private final boolean send;
-    private final int qty;
 
-    private final Party supplier;
+    private String jsonSuppliersList;
 
 
     @ConstructorForDeserialization
-    public WasteResponseState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, boolean send, int qty, Party supplier) {
+    public WasteResponseState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String jsonSuppliersList) {
         this.sender = sender;
         this.senderId = senderId;
         this.receiver = receiver;
         this.networkId = networkId;
-        this.supplier = supplier;
-        this.send = send;
-        this.qty = qty;
+        this.jsonSuppliersList = jsonSuppliersList;
     }
 
     public Party getSender() {
@@ -49,29 +50,28 @@ public class WasteResponseState implements LinearState, Serializable {
         return networkId;
     }
 
-    public boolean isSend() {
-        return send;
-    }
+
 
     @Override
     public String toString() {
-        return "WasteRequestState{" +
+        return "WasteResponseState{" +
                 "sender=" + sender +
                 ", senderId=" + senderId +
                 ", receiver=" + receiver +
                 ", networkId='" + networkId + '\'' +
-                ", send=" + send +
-                ", qty=" + qty +
-                ", supplier='" + supplier + '\'' +
+                ", suppliers='" + jsonSuppliersList + '\'' +
                 '}';
     }
 
-    public int getQty() {
-        return qty;
+    public String getJsonSuppliersList() {
+        return jsonSuppliersList;
     }
 
-    public Party getSupplier() {
-        return supplier;
+    public void suppliersListFromMap(HashMap<String, HashMap<String, Integer>> map) {
+        String json = "{" + map.entrySet().stream()
+                .map(e -> "\"" + e.getKey() + "\":{" + e.getValue().entrySet().stream().map(v -> "\"" + v.getKey() + "\":" + v.getValue()).collect(Collectors.joining(", ")) + "}")
+                .collect(Collectors.joining(", ")) + "}";
+        this.jsonSuppliersList = json;
     }
 
     @NotNull
@@ -85,4 +85,5 @@ public class WasteResponseState implements LinearState, Serializable {
     public List<AbstractParty> getParticipants() {
         return Arrays.asList(new Party[]{sender, receiver});
     }
+
 }

@@ -2,7 +2,7 @@ package it.polimi.tgolfetto.contracts;
 
 import it.polimi.tgolfetto.states.MunicipalityIdentity;
 import it.polimi.tgolfetto.states.TextileFirmIdentity;
-import it.polimi.tgolfetto.states.WasteRequestState;
+import it.polimi.tgolfetto.states.WasteResponseState;
 import net.corda.bn.states.MembershipState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
@@ -22,8 +22,8 @@ public class WasteResponseContract implements Contract {
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
         CommandData command = tx.getCommands().get(0).getValue();
-        WasteRequestState output = (WasteRequestState) tx.getOutputs().get(0).getData();
-        if (command instanceof WasteRequestContract.Commands.Issue){
+        WasteResponseState output = (WasteResponseState) tx.getOutputs().get(0).getData();
+        if (command instanceof WasteResponseContract.Commands.Issue){
             verifyIssue(tx,output.getNetworkId(), output.getSender(), output.getReceiver());
         }else{
             throw new IllegalArgumentException("Unsupported command "+command);
@@ -31,33 +31,33 @@ public class WasteResponseContract implements Contract {
     }
 
     public void verifyIssue(LedgerTransaction tx, String networkId, Party sender, Party receiver){
-        verifyMembershipsForWasteRequestTransaction(tx, networkId, sender, receiver, "Issue");
+        verifyMembershipsForWasteResponseTransaction(tx, networkId, sender, receiver, "Issue");
 
     }
-    public void verifyMembershipsForWasteRequestTransaction(LedgerTransaction tx, String networkId,
+    public void verifyMembershipsForWasteResponseTransaction(LedgerTransaction tx, String networkId,
                                                             Party sender, Party receiver,String commandName){
         requireThat(require -> {
             //Verify number of memberships
-            require.using("Waste request "+ commandName+" transaction should have 2 reference states", tx.getReferences().size() == 2);
-            require.using("Waste request "+ commandName+" transaction should contain only reference MembershipStates",
+            require.using("Waste response "+ commandName+" transaction should have 2 reference states", tx.getReferences().size() == 2);
+            require.using("Waste response "+ commandName+" transaction should contain only reference MembershipStates",
                     tx.getReferenceStates().stream().allMatch(it -> it.getClass() == MembershipState.class));
 
             //Extract memberships
             List<MembershipState> membershipReferenceStates = tx.getReferenceStates().stream().map(it -> (MembershipState) it).collect(Collectors.toList());
-            require.using("Waste request "+ commandName+
+            require.using("Waste response "+ commandName+
                             " transaction should contain only reference membership states from Business Network with "+networkId+" ID",
                     membershipReferenceStates.stream().allMatch(it -> it.getNetworkId().equals(networkId)));
 
             //Extract Membership and verify not null
             MembershipState textileFirmMembership = membershipReferenceStates.stream()
-                    .filter(it -> (it.getNetworkId().equals(networkId) && it.getIdentity().getCordaIdentity().equals(sender)))
-                    .collect(Collectors.toList()).get(0);
-            require.using("\nWaste request "+ commandName+" transaction should have sender's reference membership state", textileFirmMembership!= null);
-
-            MembershipState receiverMembership = membershipReferenceStates.stream()
                     .filter(it -> (it.getNetworkId().equals(networkId) && it.getIdentity().getCordaIdentity().equals(receiver)))
                     .collect(Collectors.toList()).get(0);
-            require.using("\nWaste request "+ commandName+" transaction should have receiver's reference membership state", receiverMembership!= null);
+            require.using("\nWaste response "+ commandName+" transaction should have sender's reference membership state", textileFirmMembership!= null);
+
+            MembershipState receiverMembership = membershipReferenceStates.stream()
+                    .filter(it -> (it.getNetworkId().equals(networkId) && it.getIdentity().getCordaIdentity().equals(sender)))
+                    .collect(Collectors.toList()).get(0);
+            require.using("\nWaste response "+ commandName+" transaction should have receiver's reference membership state", receiverMembership!= null);
 
             //Exam the customized Identity
             require.using("TextileFirm should be active member of Business Network with "+networkId, textileFirmMembership.isActive());
@@ -73,8 +73,8 @@ public class WasteResponseContract implements Contract {
 
 
     public interface Commands extends CommandData{
-        class Issue implements WasteRequestContract.Commands {}
-        class Claim implements WasteRequestContract.Commands {}
+        class Issue implements WasteResponseContract.Commands {}
+        class Claim implements WasteResponseContract.Commands {}
 
     }
 }

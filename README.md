@@ -78,8 +78,9 @@ run vaultQuery contractStateType: net.corda.bn.states.MembershipState
 -------------------Network setup is done, and business flow begins--------------------------
 
 **Step 10:** A textile firm will share data to the certifier. The flow initiator (the textile manufacturer) has to be a member of the Business network, has to have a TextileFirmIdentity, the permission to share data.
+[<JSON-FROM-LINK>](/java/it/polimi/tgolfetto/TEXTILE_DATA_MOCK.json)
 ```
-flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, receiver: Certifier, jsonData: test
+flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, receiver: Certifier, jsonData: <JSON-FROM-LINK>
 ```
 **Step 11:** Query the state from the Certifier node.
 ```
