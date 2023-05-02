@@ -1,4 +1,4 @@
-### textile-sym-dlt: Textile Symbiosis Digital Ledger Technology
+### TexSymDLT: Digital Ledger Technology for Textile Wastewater Industrial Symbiosis
 Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textile manufacturing districts
 
 ![Screenshot](TexSymDLT.png)
