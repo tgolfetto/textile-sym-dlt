@@ -1,14 +1,13 @@
 ### textile-sym-dlt: Textile Symbiosis Digital Ledger Technology
 Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textile manufacturing districts
 
-![Screenshot](nodeGraph.png)
+![Screenshot](TexSymDLT.png)
 
 ### TODO:
 - finish to write and publish related thesis paper
 - test with terminal the big json data flows
 - fix pollution data criteria according to wastewater
 - write contract and state tests
-- better graph image for readme
 
 ### Usage
 
