@@ -1,82 +1,106 @@
 {
-  "SMC1_enzymatic": {
-    "naturalFiberManufacturingValue": 250.00,
-    "syntheticFiberManufacturingValue": 250.00,
-    "spinningValue": 250.00,
-    "weavingValue": 250.00,
-    "dyeingValue": 250.00,
-    "cuttingSewingValue": 0.0
-  },
-  "SMC1_antibodyBased": {
-    "naturalFiberManufacturingValue": 5.00,
-    "syntheticFiberManufacturingValue": 5.00,
-    "spinningValue": 5.00,
-    "weavingValue": 5.42,
-    "dyeingValue": 4.23,
-    "cuttingSewingValue": 0.0
-  },
-  "SMC2_arsenic": {
-    "naturalFiberManufacturingValue": 50.00,
-    "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 50.00,
+  "SMC1_cod": {
+    "naturalFiberManufacturingValue": 20.0,
+    "syntheticFiberManufacturingValue": 20.0,
+    "spinningValue": 20.0,
     "weavingValue": 0.0,
-    "dyeingValue": 50.00,
+    "dyeingValue": 20.0,
     "cuttingSewingValue": 0.0
   },
-  "SMC2_aox": {
-    "naturalFiberManufacturingValue": 5.00,
-    "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 5.00,
+  "SMC1_bod": {
+    "naturalFiberManufacturingValue": 10000.0,
+    "syntheticFiberManufacturingValue": 10000.0,
+    "spinningValue": 10000.0,
     "weavingValue": 0.0,
-    "dyeingValue": 5.00,
+    "dyeingValue": 10000.0,
+    "cuttingSewingValue": 0.0
+  },
+  "SMC1_chlorides": {
+    "naturalFiberManufacturingValue": 1200.0,
+    "syntheticFiberManufacturingValue": 1200.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 1200.0,
+    "cuttingSewingValue": 0.0
+  },
+  "SMC1_copper": {
+    "naturalFiberManufacturingValue": 4.0,
+    "syntheticFiberManufacturingValue": 0.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 4.0,
+    "cuttingSewingValue": 4.0
+  },
+  "SMC1_arsenic": {
+    "naturalFiberManufacturingValue": 0.2,
+    "syntheticFiberManufacturingValue": 0.2,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 0.2,
+    "cuttingSewingValue": 0.0
+  },
+  "SMC1_sodium": {
+    "naturalFiberManufacturingValue": 2100.0,
+    "syntheticFiberManufacturingValue": 2100.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 2100.0,
+    "cuttingSewingValue": 0.0
+  },
+  "SMC1_tkn": {
+    "naturalFiberManufacturingValue": 60.0,
+    "syntheticFiberManufacturingValue": 60.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 60.0,
+    "cuttingSewingValue": 0.0
+  },
+  "SMC1_sulphates": {
+    "naturalFiberManufacturingValue": 1000.0,
+    "syntheticFiberManufacturingValue": 1000.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 1000.0,
+    "cuttingSewingValue": 0.0
+  },
+  "SMC1_zink": {
+    "naturalFiberManufacturingValue": 1.0,
+    "syntheticFiberManufacturingValue": 0.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 1.0,
+    "cuttingSewingValue": 1.0
+  },
+  "SMC2_temperature": {
+    "naturalFiberManufacturingValue": 35.0,
+    "syntheticFiberManufacturingValue": 35.0,
+    "spinningValue": 0.0,
+    "weavingValue": 0.0,
+    "dyeingValue": 35.0,
     "cuttingSewingValue": 0.0
   },
   "SMC2_ph": {
-    "naturalFiberManufacturingValue": 8.5,
-    "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 8.5,
+    "naturalFiberManufacturingValue": 9.0,
+    "syntheticFiberManufacturingValue": 9.0,
+    "spinningValue": 0.0,
     "weavingValue": 0.0,
-    "dyeingValue": 8.5,
+    "dyeingValue": 9.0,
     "cuttingSewingValue": 0.0
   },
-  "SMC3_voc": {
-    "naturalFiberManufacturingValue": 0.50,
-    "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 0.0,
-    "weavingValue": 0.50,
-    "dyeingValue": 0.0,
-    "cuttingSewingValue": 0.50
-  },
-  "SMC3_no2": {
+  "SMC5_oilAndGrease": {
     "naturalFiberManufacturingValue": 40.0,
     "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 0.0,
-    "weavingValue": 40.00,
-    "dyeingValue": 0.0,
-    "cuttingSewingValue": 40.00
+    "spinningValue": 40.0,
+    "weavingValue": 40.0,
+    "dyeingValue": 40.0,
+    "cuttingSewingValue": 0.0
   },
-  "SMC3_formaldehyde": {
-    "naturalFiberManufacturingValue": 0.05,
-    "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 0.0,
-    "weavingValue": 0.05,
-    "dyeingValue": 0.0,
-    "cuttingSewingValue": 0.05
-  },
-  "SMC4_renewableEnergyPerc": {
-    "naturalFiberManufacturingValue": 0.0,
-    "syntheticFiberManufacturingValue": 0.30,
-    "spinningValue": 0.30,
-    "weavingValue": 0.30,
-    "dyeingValue": 0.30,
-    "cuttingSewingValue": 0.30
-  },
-  "SMC5_solidFlow": {
-    "naturalFiberManufacturingValue": 50.0,
-    "syntheticFiberManufacturingValue": 0.0,
-    "spinningValue": 50.0,
-    "weavingValue": 50.00,
-    "dyeingValue": 50.0,
-    "cuttingSewingValue": 50.00
+  "SMC5_tds": {
+    "naturalFiberManufacturingValue": 2100.0,
+    "syntheticFiberManufacturingValue": 2100.0,
+    "spinningValue": 2100.0,
+    "weavingValue": 2100.0,
+    "dyeingValue": 2100.0,
+    "cuttingSewingValue": 2100.0
   }
 }

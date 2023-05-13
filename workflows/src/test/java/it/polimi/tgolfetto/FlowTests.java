@@ -1,9 +1,8 @@
 package it.polimi.tgolfetto;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import it.polimi.tgolfetto.flows.SendCertification;
-import it.polimi.tgolfetto.flows.SendTextileData;
+import it.polimi.tgolfetto.flows.SendWasteWaterData;
 import it.polimi.tgolfetto.flows.SendWasteRequest;
 import it.polimi.tgolfetto.flows.SendWasteResponse;
 import it.polimi.tgolfetto.flows.membershipFlows.*;
@@ -14,16 +13,12 @@ import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.node.NetworkParameters;
 import net.corda.core.node.NotaryInfo;
-import net.corda.core.node.services.Vault;
 import net.corda.testing.node.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -52,495 +47,639 @@ public class FlowTests {
     }
 
     private final String EXPECTED_SUPPLIER_LIST_MOCK = "{\"wastewater\":{\"O=TextileManufacturer3, L=Prato, C=IT\": {65:{\n" +
-            "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 128.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 182.23,\n" +
-            "    \"spinningValue\": 123.11,\n" +
-            "    \"weavingValue\": 105.42,\n" +
-            "    \"dyeingValue\": 100.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC1_antibodyBased\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 4.23,\n" +
-            "    \"spinningValue\": 2.11,\n" +
-            "    \"weavingValue\": 5.42,\n" +
-            "    \"dyeingValue\": 1.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC2_arsenic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_cod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 17.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
+            "    \"spinningValue\": 12.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 12.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_bod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 8000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 9000.0,\n" +
+            "    \"spinningValue\": 4000.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 4300.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_chlorides\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1150.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1400.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_copper\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 3.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 2.0,\n" +
+            "    \"cuttingSewingValue\": 2.0\n" +
+            "  },\n" +
+            "  \"SMC1_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.1,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.12,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.23,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sodium\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2040.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1700.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_tkn\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 20.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 30.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 43.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sulphates\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 600.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 500.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_zink\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.7,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1.9,\n" +
+            "    \"cuttingSewingValue\": 1.0\n" +
+            "  },\n" +
+            "  \"SMC2_temperature\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 33.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 33.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 32.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 7.5,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 7.1,\n" +
+            "    \"naturalFiberManufacturingValue\": 7.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 8.5,\n" +
+            "    \"spinningValue\": 0.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 8.23,\n" +
+            "    \"dyeingValue\": 7.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_voc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.42,\n" +
+            "  \"SMC5_oilAndGrease\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 32.0,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.30,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.12\n" +
+            "    \"spinningValue\": 29.0,\n" +
+            "    \"weavingValue\": 38.0,\n" +
+            "    \"dyeingValue\": 35.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_no2\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 22.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 30.0,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 12.23\n" +
-            "  },\n" +
-            "  \"SMC3_formaldehyde\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.02,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.03,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.01\n" +
-            "  },\n" +
-            "  \"SMC4_renewableEnergyPerc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
-            "    \"spinningValue\": 0.20,\n" +
-            "    \"weavingValue\": 0.13,\n" +
-            "    \"dyeingValue\": 0.10,\n" +
-            "    \"cuttingSewingValue\": 0.53\n" +
-            "  },\n" +
-            "  \"SMC5_solidFlow\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 21.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 30.0,\n" +
-            "    \"weavingValue\": 43.13,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 41.12\n" +
+            "  \"SMC5_tds\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1900.0,\n" +
+            "    \"spinningValue\": 1800.0,\n" +
+            "    \"weavingValue\": 2030.0,\n" +
+            "    \"dyeingValue\": 1750.0,\n" +
+            "    \"cuttingSewingValue\": 1400.0\n" +
             "  }\n" +
             "}}, \"O=TextileManufacturer2, L=Prato, C=IT\": {25:{\n" +
-            "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 128.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 182.23,\n" +
-            "    \"spinningValue\": 123.11,\n" +
-            "    \"weavingValue\": 105.42,\n" +
-            "    \"dyeingValue\": 100.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC1_antibodyBased\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 4.23,\n" +
-            "    \"spinningValue\": 2.11,\n" +
-            "    \"weavingValue\": 5.42,\n" +
-            "    \"dyeingValue\": 1.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC2_arsenic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_cod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 17.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
+            "    \"spinningValue\": 12.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 12.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_bod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 8000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 9000.0,\n" +
+            "    \"spinningValue\": 4000.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 4300.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_chlorides\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1150.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1400.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_copper\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 3.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 2.0,\n" +
+            "    \"cuttingSewingValue\": 2.0\n" +
+            "  },\n" +
+            "  \"SMC1_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.1,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.12,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.23,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sodium\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2040.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1700.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_tkn\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 20.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 30.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 43.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sulphates\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 600.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 500.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_zink\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.7,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1.9,\n" +
+            "    \"cuttingSewingValue\": 1.0\n" +
+            "  },\n" +
+            "  \"SMC2_temperature\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 33.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 33.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 32.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 7.5,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 7.1,\n" +
+            "    \"naturalFiberManufacturingValue\": 7.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 8.5,\n" +
+            "    \"spinningValue\": 0.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 8.23,\n" +
+            "    \"dyeingValue\": 7.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_voc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.42,\n" +
+            "  \"SMC5_oilAndGrease\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 32.0,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.30,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.12\n" +
+            "    \"spinningValue\": 29.0,\n" +
+            "    \"weavingValue\": 38.0,\n" +
+            "    \"dyeingValue\": 35.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_no2\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 22.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 30.0,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 12.23\n" +
-            "  },\n" +
-            "  \"SMC3_formaldehyde\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.02,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.03,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.01\n" +
-            "  },\n" +
-            "  \"SMC4_renewableEnergyPerc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
-            "    \"spinningValue\": 0.20,\n" +
-            "    \"weavingValue\": 0.13,\n" +
-            "    \"dyeingValue\": 0.10,\n" +
-            "    \"cuttingSewingValue\": 0.53\n" +
-            "  },\n" +
-            "  \"SMC5_solidFlow\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 21.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 30.0,\n" +
-            "    \"weavingValue\": 43.13,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 41.12\n" +
+            "  \"SMC5_tds\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1900.0,\n" +
+            "    \"spinningValue\": 1800.0,\n" +
+            "    \"weavingValue\": 2030.0,\n" +
+            "    \"dyeingValue\": 1750.0,\n" +
+            "    \"cuttingSewingValue\": 1400.0\n" +
             "  }\n" +
             "}}}, \"cotton\":{\"O=TextileManufacturer2, L=Prato, C=IT\": {140:{\n" +
-            "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 128.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 182.23,\n" +
-            "    \"spinningValue\": 123.11,\n" +
-            "    \"weavingValue\": 105.42,\n" +
-            "    \"dyeingValue\": 100.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC1_antibodyBased\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 4.23,\n" +
-            "    \"spinningValue\": 2.11,\n" +
-            "    \"weavingValue\": 5.42,\n" +
-            "    \"dyeingValue\": 1.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC2_arsenic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_cod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 17.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
+            "    \"spinningValue\": 12.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 12.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_bod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 8000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 9000.0,\n" +
+            "    \"spinningValue\": 4000.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 4300.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_chlorides\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1150.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1400.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_copper\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 3.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 2.0,\n" +
+            "    \"cuttingSewingValue\": 2.0\n" +
+            "  },\n" +
+            "  \"SMC1_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.1,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.12,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.23,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sodium\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2040.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1700.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_tkn\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 20.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 30.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 43.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sulphates\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 600.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 500.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_zink\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.7,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1.9,\n" +
+            "    \"cuttingSewingValue\": 1.0\n" +
+            "  },\n" +
+            "  \"SMC2_temperature\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 33.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 33.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 32.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 7.5,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 7.1,\n" +
+            "    \"naturalFiberManufacturingValue\": 7.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 8.5,\n" +
+            "    \"spinningValue\": 0.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 8.23,\n" +
+            "    \"dyeingValue\": 7.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_voc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.42,\n" +
+            "  \"SMC5_oilAndGrease\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 32.0,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.30,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.12\n" +
+            "    \"spinningValue\": 29.0,\n" +
+            "    \"weavingValue\": 38.0,\n" +
+            "    \"dyeingValue\": 35.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_no2\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 22.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 30.0,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 12.23\n" +
-            "  },\n" +
-            "  \"SMC3_formaldehyde\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.02,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.03,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.01\n" +
-            "  },\n" +
-            "  \"SMC4_renewableEnergyPerc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
-            "    \"spinningValue\": 0.20,\n" +
-            "    \"weavingValue\": 0.13,\n" +
-            "    \"dyeingValue\": 0.10,\n" +
-            "    \"cuttingSewingValue\": 0.53\n" +
-            "  },\n" +
-            "  \"SMC5_solidFlow\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 21.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 30.0,\n" +
-            "    \"weavingValue\": 43.13,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 41.12\n" +
+            "  \"SMC5_tds\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1900.0,\n" +
+            "    \"spinningValue\": 1800.0,\n" +
+            "    \"weavingValue\": 2030.0,\n" +
+            "    \"dyeingValue\": 1750.0,\n" +
+            "    \"cuttingSewingValue\": 1400.0\n" +
             "  }\n" +
             "}}}}";
-    private final String TEXTILE_DATA_MOCK = "{\n" +
-            "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 128.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 182.23,\n" +
-            "    \"spinningValue\": 123.11,\n" +
-            "    \"weavingValue\": 105.42,\n" +
-            "    \"dyeingValue\": 100.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC1_antibodyBased\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 4.23,\n" +
-            "    \"spinningValue\": 2.11,\n" +
-            "    \"weavingValue\": 5.42,\n" +
-            "    \"dyeingValue\": 1.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC2_arsenic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+    private final String WASTEWATER_DATA_MOCK = "{\n" +
+            "  \"SMC1_cod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 17.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
+            "    \"spinningValue\": 12.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 12.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+            "  \"SMC1_bod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 8000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 9000.0,\n" +
+            "    \"spinningValue\": 4000.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 4300.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_chlorides\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1150.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1400.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_copper\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 3.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 2.0,\n" +
+            "    \"cuttingSewingValue\": 2.0\n" +
+            "  },\n" +
+            "  \"SMC1_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.1,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.12,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.23,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sodium\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2040.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1700.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_tkn\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 20.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 30.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 43.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sulphates\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 600.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 500.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_zink\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.7,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1.9,\n" +
+            "    \"cuttingSewingValue\": 1.0\n" +
+            "  },\n" +
+            "  \"SMC2_temperature\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 33.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 33.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 32.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 7.5,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 7.1,\n" +
+            "    \"naturalFiberManufacturingValue\": 7.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 8.5,\n" +
+            "    \"spinningValue\": 0.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 8.23,\n" +
+            "    \"dyeingValue\": 7.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_voc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.42,\n" +
+            "  \"SMC5_oilAndGrease\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 32.0,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.30,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.12\n" +
+            "    \"spinningValue\": 29.0,\n" +
+            "    \"weavingValue\": 38.0,\n" +
+            "    \"dyeingValue\": 35.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_no2\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 22.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 30.0,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 12.23\n" +
-            "  },\n" +
-            "  \"SMC3_formaldehyde\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.02,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.03,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.01\n" +
-            "  },\n" +
-            "  \"SMC4_renewableEnergyPerc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
-            "    \"spinningValue\": 0.20,\n" +
-            "    \"weavingValue\": 0.13,\n" +
-            "    \"dyeingValue\": 0.10,\n" +
-            "    \"cuttingSewingValue\": 0.53\n" +
-            "  },\n" +
-            "  \"SMC5_solidFlow\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 21.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 30.0,\n" +
-            "    \"weavingValue\": 43.13,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 41.12\n" +
+            "  \"SMC5_tds\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1900.0,\n" +
+            "    \"spinningValue\": 1800.0,\n" +
+            "    \"weavingValue\": 2030.0,\n" +
+            "    \"dyeingValue\": 1750.0,\n" +
+            "    \"cuttingSewingValue\": 1400.0\n" +
             "  }\n" +
             "}";
 
-    private final String CORRECT_TEXTILE_DATA_MOCK = "{\n" +
-            "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 128.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 182.23,\n" +
-            "    \"spinningValue\": 123.11,\n" +
-            "    \"weavingValue\": 105.42,\n" +
-            "    \"dyeingValue\": 100.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC1_antibodyBased\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 4.23,\n" +
-            "    \"spinningValue\": 2.11,\n" +
-            "    \"weavingValue\": 5.42,\n" +
-            "    \"dyeingValue\": 1.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC2_arsenic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 32.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 32.11,\n" +
+    private final String CORRECT_WASTEWATER_DATA_MOCK = "{\n" +
+            "  \"SMC1_cod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 17.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 10.0,\n" +
+            "    \"spinningValue\": 12.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 21.23,\n" +
+            "    \"dyeingValue\": 12.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 2.99,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 2.11,\n" +
+            "  \"SMC1_bod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 8000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 9000.0,\n" +
+            "    \"spinningValue\": 4000.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 1.23,\n" +
+            "    \"dyeingValue\": 4300.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_chlorides\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1150.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_copper\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 3.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 2.0,\n" +
+            "    \"cuttingSewingValue\": 2.0\n" +
+            "  },\n" +
+            "  \"SMC1_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.1,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.12,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.13,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sodium\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2040.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1700.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_tkn\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 20.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 30.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 43.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sulphates\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 600.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 500.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_zink\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.7,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.4,\n" +
+            "    \"cuttingSewingValue\": 1.0\n" +
+            "  },\n" +
+            "  \"SMC2_temperature\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 33.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 33.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 32.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 7.5,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 7.1,\n" +
+            "    \"naturalFiberManufacturingValue\": 7.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 8.5,\n" +
+            "    \"spinningValue\": 0.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 8.23,\n" +
+            "    \"dyeingValue\": 7.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_voc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.42,\n" +
+            "  \"SMC5_oilAndGrease\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 32.0,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.30,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.12\n" +
+            "    \"spinningValue\": 29.0,\n" +
+            "    \"weavingValue\": 38.0,\n" +
+            "    \"dyeingValue\": 35.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_no2\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 22.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 30.0,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 12.23\n" +
-            "  },\n" +
-            "  \"SMC3_formaldehyde\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.02,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.03,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.01\n" +
-            "  },\n" +
-            "  \"SMC4_renewableEnergyPerc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.10,\n" +
-            "    \"spinningValue\": 0.20,\n" +
-            "    \"weavingValue\": 0.13,\n" +
-            "    \"dyeingValue\": 0.10,\n" +
-            "    \"cuttingSewingValue\": 0.23\n" +
-            "  },\n" +
-            "  \"SMC5_solidFlow\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 21.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 30.0,\n" +
-            "    \"weavingValue\": 43.13,\n" +
-            "    \"dyeingValue\": 10.0,\n" +
-            "    \"cuttingSewingValue\": 41.12\n" +
+            "  \"SMC5_tds\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1900.0,\n" +
+            "    \"spinningValue\": 1800.0,\n" +
+            "    \"weavingValue\": 2030.0,\n" +
+            "    \"dyeingValue\": 1750.0,\n" +
+            "    \"cuttingSewingValue\": 1400.0\n" +
             "  }\n" +
             "}";
 
     private final String CERTIFICATION_CRITERIA_MOCK = "{\n" +
-            "  \"SMC1_enzymatic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 250.00,\n" +
-            "    \"syntheticFiberManufacturingValue\": 250.00,\n" +
-            "    \"spinningValue\": 250.00,\n" +
-            "    \"weavingValue\": 250.00,\n" +
-            "    \"dyeingValue\": 250.00,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC1_antibodyBased\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 5.00,\n" +
-            "    \"syntheticFiberManufacturingValue\": 5.00,\n" +
-            "    \"spinningValue\": 5.00,\n" +
-            "    \"weavingValue\": 5.42,\n" +
-            "    \"dyeingValue\": 4.23,\n" +
-            "    \"cuttingSewingValue\": 0.0\n" +
-            "  },\n" +
-            "  \"SMC2_arsenic\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 50.00,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 50.00,\n" +
+            "  \"SMC1_cod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 20.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 20.0,\n" +
+            "    \"spinningValue\": 20.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 50.00,\n" +
+            "    \"dyeingValue\": 20.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC2_aox\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 5.00,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 5.00,\n" +
+            "  \"SMC1_bod\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 10000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 10000.0,\n" +
+            "    \"spinningValue\": 10000.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 5.00,\n" +
+            "    \"dyeingValue\": 10000.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_chlorides\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1200.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1200.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1200.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_copper\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 4.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 4.0,\n" +
+            "    \"cuttingSewingValue\": 4.0\n" +
+            "  },\n" +
+            "  \"SMC1_arsenic\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 0.2,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.2,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 0.2,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sodium\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2100.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 2100.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_tkn\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 60.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 60.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 60.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_sulphates\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1000.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 1000.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1000.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
+            "  },\n" +
+            "  \"SMC1_zink\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 1.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 1.0,\n" +
+            "    \"cuttingSewingValue\": 1.0\n" +
+            "  },\n" +
+            "  \"SMC2_temperature\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 35.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 35.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
+            "    \"weavingValue\": 0.0,\n" +
+            "    \"dyeingValue\": 35.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
             "  \"SMC2_ph\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 8.5,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 8.5,\n" +
+            "    \"naturalFiberManufacturingValue\": 9.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 9.0,\n" +
+            "    \"spinningValue\": 0.0,\n" +
             "    \"weavingValue\": 0.0,\n" +
-            "    \"dyeingValue\": 8.5,\n" +
+            "    \"dyeingValue\": 9.0,\n" +
             "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_voc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.50,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.50,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.50\n" +
-            "  },\n" +
-            "  \"SMC3_no2\": {\n" +
+            "  \"SMC5_oilAndGrease\": {\n" +
             "    \"naturalFiberManufacturingValue\": 40.0,\n" +
             "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 40.00,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 40.00\n" +
+            "    \"spinningValue\": 40.0,\n" +
+            "    \"weavingValue\": 40.0,\n" +
+            "    \"dyeingValue\": 40.0,\n" +
+            "    \"cuttingSewingValue\": 0.0\n" +
             "  },\n" +
-            "  \"SMC3_formaldehyde\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.05,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 0.0,\n" +
-            "    \"weavingValue\": 0.05,\n" +
-            "    \"dyeingValue\": 0.0,\n" +
-            "    \"cuttingSewingValue\": 0.05\n" +
-            "  },\n" +
-            "  \"SMC4_renewableEnergyPerc\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 0.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.30,\n" +
-            "    \"spinningValue\": 0.30,\n" +
-            "    \"weavingValue\": 0.30,\n" +
-            "    \"dyeingValue\": 0.30,\n" +
-            "    \"cuttingSewingValue\": 0.30\n" +
-            "  },\n" +
-            "  \"SMC5_solidFlow\": {\n" +
-            "    \"naturalFiberManufacturingValue\": 50.0,\n" +
-            "    \"syntheticFiberManufacturingValue\": 0.0,\n" +
-            "    \"spinningValue\": 50.0,\n" +
-            "    \"weavingValue\": 50.00,\n" +
-            "    \"dyeingValue\": 50.0,\n" +
-            "    \"cuttingSewingValue\": 50.00\n" +
+            "  \"SMC5_tds\": {\n" +
+            "    \"naturalFiberManufacturingValue\": 2100.0,\n" +
+            "    \"syntheticFiberManufacturingValue\": 2100.0,\n" +
+            "    \"spinningValue\": 2100.0,\n" +
+            "    \"weavingValue\": 2100.0,\n" +
+            "    \"dyeingValue\": 2100.0,\n" +
+            "    \"cuttingSewingValue\": 2100.0\n" +
             "  }\n" +
             "}";
 
@@ -803,12 +942,12 @@ public class FlowTests {
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
         // Send textile data from TextileFirm to Certifier
-        SendTextileData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendTextileData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), TEXTILE_DATA_MOCK);
+        SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendTextileDataInitiatorFlow);
         network.runNetwork();
         TextileDataState storedDataState = certifier.getServices().getVaultService()
                 .queryBy(TextileDataState.class).getStates().get(0).getState().getData();
-        assertEquals(storedDataState.getJsonData(), TEXTILE_DATA_MOCK);
+        assertEquals(storedDataState.getJsonData(), WASTEWATER_DATA_MOCK);
     }
 
     @Test
@@ -861,25 +1000,24 @@ public class FlowTests {
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
         // Send textile data from TextileFirm to Certifier
-        SendTextileData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendTextileData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), TEXTILE_DATA_MOCK);
+        SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendTextileDataInitiatorFlow);
         network.runNetwork();
         TextileDataState storedDataState = certifier.getServices().getVaultService()
                 .queryBy(TextileDataState.class).getStates().get(0).getState().getData();
-        assertEquals(storedDataState.getJsonData(), TEXTILE_DATA_MOCK);
+        assertEquals(storedDataState.getJsonData(), WASTEWATER_DATA_MOCK);
         // Send certification from Certifier to TextileFirm
         SendCertification.SendCertificationInitiator sendCertificationInitiatorFlow = new SendCertification.SendCertificationInitiator(networkId, certifierMembershipId, textileFirm.getInfo().identityFromX500Name(CordaX500Name.parse("O=TextileManufacturer1,L=Prato,C=IT")), CERTIFICATION_CRITERIA_MOCK);
         certifier.startFlow(sendCertificationInitiatorFlow);
         network.runNetwork();
         CertificationState storedCertState = textileFirm.getServices().getVaultService()
                 .queryBy(CertificationState.class).getStates().get(0).getState().getData();
-        assertEquals(storedCertState.getErrors(), "SMC4_renewableEnergyPerc - cuttingSewingValue actual: 0.53 limit: 0.3\n" +
-                "SMC2_aox - naturalFiberManufacturingValue actual: 32.99 limit: 5.0\n" +
-                "SMC2_aox - spinningValue actual: 32.11 limit: 5.0\n" +
-                "SMC2_aox - dyeingValue actual: 21.23 limit: 5.0\n");
+        assertEquals(storedCertState.getErrors(), "SMC1_arsenic - dyeingValue actual: 0.23 limit: 0.2\n" +
+                "SMC1_chlorides - dyeingValue actual: 1400.0 limit: 1200.0\n" +
+                "SMC1_zink - dyeingValue actual: 1.9 limit: 1.0\n");
         assertEquals(storedCertState.isCertified(), false);
         // Send more textile data from TextileFirm to Certifier
-        sendTextileDataInitiatorFlow = new SendTextileData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), CORRECT_TEXTILE_DATA_MOCK);
+        sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), CORRECT_WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendTextileDataInitiatorFlow);
         network.runNetwork();
         // Issue another certification from Certifier to TextileFirm
@@ -943,12 +1081,12 @@ public class FlowTests {
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
         // Send textile data from TextileFirm to Municipality
-        SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", TEXTILE_DATA_MOCK);
+        SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
         WasteRequestState storedDataState = municipality.getServices().getVaultService()
                 .queryBy(WasteRequestState.class).getStates().get(0).getState().getData();
-        assertEquals(storedDataState.getTextileData(), TEXTILE_DATA_MOCK);
+        assertEquals(storedDataState.getTextileData(), WASTEWATER_DATA_MOCK);
         assertEquals(storedDataState.isSend(), true);
 
     }
@@ -1041,7 +1179,7 @@ public class FlowTests {
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
         // Send textile data from TextileFirm to Municipality
-        SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", TEXTILE_DATA_MOCK);
+        SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
         sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), false, 50, "wastewater", "{}");
@@ -1051,14 +1189,14 @@ public class FlowTests {
         textileFirm.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
 
-        sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirm2MembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 25, "wastewater", TEXTILE_DATA_MOCK);
+        sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirm2MembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 25, "wastewater", WASTEWATER_DATA_MOCK);
         textileFirm2.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
-        sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirm2MembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 140, "cotton", TEXTILE_DATA_MOCK);
+        sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirm2MembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 140, "cotton", WASTEWATER_DATA_MOCK);
         textileFirm2.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
 
-        sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirm3MembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 65, "wastewater", TEXTILE_DATA_MOCK);
+        sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirm3MembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 65, "wastewater", WASTEWATER_DATA_MOCK);
         textileFirm3.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
 

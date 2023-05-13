@@ -2,8 +2,7 @@ package it.polimi.tgolfetto.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import it.polimi.tgolfetto.contracts.CertificationContract;
-import it.polimi.tgolfetto.contracts.TextileDataContract;
-import it.polimi.tgolfetto.model.TextileData;
+import it.polimi.tgolfetto.model.WasteWaterData;
 import it.polimi.tgolfetto.states.*;
 import net.corda.bn.flows.BNService;
 import net.corda.bn.flows.IllegalMembershipStatusException;
@@ -18,7 +17,6 @@ import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
-import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
@@ -61,13 +59,13 @@ public class SendCertification {
         @Suspendable
         public SignedTransaction call() throws FlowException {
             List<StateAndRef<TextileDataState>> states = getServiceHub().getVaultService().queryBy(TextileDataState.class).getStates();
-            TextileData[] textileDatas = states.stream().filter(state -> state.getState().getData().getSender().equals(receiver)).map(state -> {
+            WasteWaterData[] wasteWaterData = states.stream().filter(state -> state.getState().getData().getSender().equals(receiver)).map(state -> {
                 try {
-                    return TextileData.fromJson(state.getState().getData().getJsonData());
+                    return WasteWaterData.fromJson(state.getState().getData().getJsonData());
                 } catch (ScriptException e) {
                     throw new RuntimeException("### SendCertificationInitiator: " + e);
                 }
-            }).toArray(TextileData[]::new);
+            }).toArray(WasteWaterData[]::new);
 
             // Obtain a reference to a notary we wish to use.
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
@@ -75,7 +73,7 @@ public class SendCertification {
             CertificationState outputState = null;
             try {
                 outputState = new CertificationState(getOurIdentity(), this.senderId, this.receiver, networkId, false, "");
-                outputState.evaluateScore(textileDatas[textileDatas.length - 1], criteria);
+                outputState.evaluateScore(wasteWaterData[wasteWaterData.length - 1], criteria);
             } catch (ScriptException e) {
                 throw new RuntimeException(e);
             }
@@ -127,7 +125,7 @@ public class SendCertification {
         }
 
         @Suspendable
-        private SendTextileData.Memberships businessNetworkPartialVerification(String networkId, Party sender, Party receiver) throws MembershipNotFoundException {
+        private SendWasteWaterData.Memberships businessNetworkPartialVerification(String networkId, Party sender, Party receiver) throws MembershipNotFoundException {
             BNService bnService = getServiceHub().cordaService(BNService.class);
             StateAndRef<MembershipState> senderMembership = null;
             try {
@@ -142,7 +140,7 @@ public class SendCertification {
                 throw new MembershipNotFoundException("Receiver is not part of Business Network with $networkId ID");
             }
 
-            return new SendTextileData.Memberships(senderMembership, receiverMembership);
+            return new SendWasteWaterData.Memberships(senderMembership, receiverMembership);
         }
 
     }

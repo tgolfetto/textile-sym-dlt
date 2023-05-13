@@ -6,7 +6,6 @@ Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textil
 ### TODO:
 - finish to write and publish related thesis paper
 - test with terminal the big json data flows
-- fix pollution data criteria according to wastewater
 - write contract and state tests
 
 ### Usage
@@ -29,7 +28,7 @@ flow start CreateNetwork
 ```
 Sample output:
 ```
-Mon Apr 12 10:35:47 EDT 2021>>> flow start CreateNetwork
+Wed Apr 12 10:35:47 EDT 2023>>> flow start CreateNetwork
 [...]
 Flow completed with result: 
 A network was created with NetworkID: <xxxx-xxxx-NETWORK-ID-xxxxx>  <- This is what you need in Step 2
@@ -106,13 +105,13 @@ flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, s
 - send: false --> A firm wish to receive the waste material 
 
 ```
-flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, textileData: <JSON-TEXTILE-DATA>
+flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
 ```
 
 **Step 14:** Municipality can communicate to a textile firm which other firms in the network can provide the waste material the need to receive with the related pollution data
 
 ```
-flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, textileData: <JSON-TEXTILE-DATA>
+flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
 ```
 **Step 15:** Query the states from nodes
 

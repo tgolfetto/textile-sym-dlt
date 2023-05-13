@@ -2,7 +2,6 @@ package it.polimi.tgolfetto.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import it.polimi.tgolfetto.contracts.WasteResponseContract;
-import it.polimi.tgolfetto.model.TextileData;
 import it.polimi.tgolfetto.states.*;
 import net.corda.bn.flows.BNService;
 import net.corda.bn.flows.IllegalMembershipStatusException;
@@ -18,10 +17,8 @@ import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
-import net.corda.core.utilities.UntrustworthyData;
 import org.jetbrains.annotations.Nullable;
 
-import javax.script.ScriptException;
 import java.util.*;
 
 public class SendWasteResponse {

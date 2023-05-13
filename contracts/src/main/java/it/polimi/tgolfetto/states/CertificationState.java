@@ -2,7 +2,7 @@ package it.polimi.tgolfetto.states;
 
 import it.polimi.tgolfetto.contracts.CertificationContract;
 import it.polimi.tgolfetto.model.SMC;
-import it.polimi.tgolfetto.model.TextileData;
+import it.polimi.tgolfetto.model.WasteWaterData;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -12,7 +12,6 @@ import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
 import javax.script.ScriptException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,9 +37,9 @@ public class CertificationState implements LinearState {
 
     }
 
-    public void evaluateScore(TextileData textileData, String criteria) throws ScriptException {
-        TextileData certificationCriteria = TextileData.fromJson(criteria);
-        HashMap<String, SMC> textileMap = textileData.getHashMap();
+    public void evaluateScore(WasteWaterData wasteWaterData, String criteria) throws ScriptException {
+        WasteWaterData certificationCriteria = WasteWaterData.fromJson(criteria);
+        HashMap<String, SMC> textileMap = wasteWaterData.getHashMap();
         HashMap<String, SMC> criteriaMap = certificationCriteria.getHashMap();
         for (String SMCName : criteriaMap.keySet()) {
             SMC textileSMC = textileMap.get(SMCName);

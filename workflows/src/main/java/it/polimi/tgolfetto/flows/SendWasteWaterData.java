@@ -10,7 +10,6 @@ import net.corda.bn.states.MembershipState;
 import net.corda.core.contracts.*;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
-import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
@@ -22,15 +21,12 @@ import it.polimi.tgolfetto.states.TextileDataState;
 import it.polimi.tgolfetto.states.TextileFirmIdentity;
 import org.jetbrains.annotations.Nullable;
 
-import javax.script.ScriptException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-import static net.corda.core.contracts.ContractsDSL.requireThat;
-
-public class SendTextileData {
+public class SendWasteWaterData {
 
     @InitiatingFlow
     @StartableByRPC
