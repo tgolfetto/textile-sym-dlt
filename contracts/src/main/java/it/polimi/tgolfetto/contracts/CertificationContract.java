@@ -15,7 +15,7 @@ import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 public class CertificationContract implements Contract {
 
-    public static final String CertificationContractContract_ID = "it.polimi.tgolfetto.textile-sym-dlt.contracts.CertificationContract";
+    public static final String CertificationContractContract_ID = "it.polimi.tgolfetto.contracts.CertificationContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
