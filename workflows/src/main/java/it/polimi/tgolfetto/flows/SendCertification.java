@@ -99,9 +99,9 @@ public class SendCertification {
          */
         @Suspendable
         protected void businessNetworkFullVerification(String networkId, Party sender, Party receiver) throws MembershipNotFoundException {
-            BNService bnService = getServiceHub().cordaService(BNService.class);
+            Memberships memberships = businessNetworkPartialVerification(networkId, sender, receiver);
             try {
-                MembershipState senderMembership = bnService.getMembership(networkId, sender).getState().getData();
+                MembershipState senderMembership = memberships.getMembershipA().getState().getData();
                 if (!senderMembership.isActive()) {
                     throw new IllegalMembershipStatusException("$sender is not active member of Business Network with $networkId ID");
                 }
@@ -112,7 +112,7 @@ public class SendCertification {
                 throw new MembershipNotFoundException("$sender is not member of Business Network with $networkId ID");
             }
             try {
-                MembershipState receiverMembership = bnService.getMembership(networkId, receiver).getState().getData();
+                MembershipState receiverMembership = memberships.getMembershipB().getState().getData();
                 if (!receiverMembership.isActive()) {
                     throw new IllegalMembershipStatusException("$receiver is not active member of Business Network with $networkId ID");
                 }
@@ -125,7 +125,7 @@ public class SendCertification {
         }
 
         @Suspendable
-        private SendWasteWaterData.Memberships businessNetworkPartialVerification(String networkId, Party sender, Party receiver) throws MembershipNotFoundException {
+        private Memberships businessNetworkPartialVerification(String networkId, Party sender, Party receiver) throws MembershipNotFoundException {
             BNService bnService = getServiceHub().cordaService(BNService.class);
             StateAndRef<MembershipState> senderMembership = null;
             try {
@@ -140,7 +140,7 @@ public class SendCertification {
                 throw new MembershipNotFoundException("Receiver is not part of Business Network with $networkId ID");
             }
 
-            return new SendWasteWaterData.Memberships(senderMembership, receiverMembership);
+            return new Memberships(senderMembership, receiverMembership);
         }
 
     }

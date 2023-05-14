@@ -55,9 +55,6 @@ public class AssignBNIdentity extends FlowLogic<String> {
             subFlow(new ModifyBusinessIdentityFlow(membershipId, certifierIdentity, notary));
         } else if (this.firmType.equals(BUSINESS_NET_IDENTITIES.Municipality.toString())) {
             MunicipalityIdentity municipalityIdentity = new MunicipalityIdentity(bnIdentity);
-            if (!municipalityIdentity.isValid()) {
-                throw new IllegalArgumentException(bnIdentity + " in not a valid Municipality Identity");
-            }
             subFlow(new ModifyBusinessIdentityFlow(membershipId, municipalityIdentity, notary));
         } else {
             throw new IllegalArgumentException(bnIdentity + " in not a valid BN Identity");

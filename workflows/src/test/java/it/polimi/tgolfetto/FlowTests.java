@@ -858,6 +858,77 @@ public class FlowTests {
                 .queryBy(MembershipState.class).getStates().get(1).getState().getData();
         assert (storedMembershipState.getIdentity().getBusinessIdentity() instanceof it.polimi.tgolfetto.states.TextileFirmIdentity);
     }
+    @Test
+    public void assignBNIdentityErrorsTest() {
+        // Create network
+        CreateNetwork flow = new CreateNetwork();
+        networkOperator.startFlow(flow);
+        network.runNetwork();
+        MembershipState storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData();
+        String networkId = storedMembershipState.getNetworkId();
+        // TextileFirm request join
+        RequestMembership requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        textileFirm.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        UniqueIdentifier textileFirmMembershipId = storedMembershipState.getLinearId();
+        // Certifier request join
+        requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        certifier.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(2).getState().getData();
+        UniqueIdentifier certifierFirmMembershipId = storedMembershipState.getLinearId();
+        // Municipality request join
+        requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        municipality.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(3).getState().getData();
+        UniqueIdentifier municipalityMembershipId = storedMembershipState.getLinearId();
+        // Activate memberships
+        ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+
+        activateMemberFlow = new ActivateMember(certifierFirmMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+
+        activateMemberFlow = new ActivateMember(municipalityMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+        // Create network subgroup
+        UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, certifierFirmMembershipId, municipalityMembershipId)));
+        networkOperator.startFlow(createNetworkSubGroupFlow);
+        network.runNetwork();
+        try {
+            AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("TextileFirm", textileFirmMembershipId, "INVALIDIDENTITY");
+            networkOperator.startFlow(assignBNIdentityFlow);
+            network.runNetwork();
+        }catch (Exception e){
+            assert(e.getMessage().isEmpty() == false);
+        }
+        try {
+            AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("Certifier", certifierFirmMembershipId, "INVALIDIDENTITY");
+            networkOperator.startFlow(assignBNIdentityFlow);
+            network.runNetwork();
+        }catch (Exception e){
+            assert(e.getMessage().isEmpty() == false);
+        }
+        try {
+            AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("MISTAKE", municipalityMembershipId, "INVALIDIDENTITY");
+            networkOperator.startFlow(assignBNIdentityFlow);
+            network.runNetwork();
+        }catch (Exception e){
+            assert(e.getMessage().isEmpty() == false);
+        }
+    }
+
 
     @Test
     public void assignTextileDataSharingRoleTest () {
@@ -890,10 +961,14 @@ public class FlowTests {
         storedMembershipState = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(1).getState().getData();
         assert (storedMembershipState.getRoles().toArray()[0] instanceof TextileFirmIdentity.TextileDataSharingRole);
+        // Test to add more roles
+        assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        network.runNetwork();
     }
 
     @Test
-    public void sendTextileDataTest() throws IOException {
+    public void sendWasteWaterDataTest() throws IOException {
         // Create network
         CreateNetwork flow = new CreateNetwork();
         networkOperator.startFlow(flow);
@@ -941,13 +1016,130 @@ public class FlowTests {
         AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
-        // Send textile data from TextileFirm to Certifier
+        // Send waste water data from TextileFirm to Certifier
         SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendTextileDataInitiatorFlow);
         network.runNetwork();
         TextileDataState storedDataState = certifier.getServices().getVaultService()
                 .queryBy(TextileDataState.class).getStates().get(0).getState().getData();
         assertEquals(storedDataState.getJsonData(), WASTEWATER_DATA_MOCK);
+    }
+
+    @Test
+    public void sendWasteWaterDataErrorsTest() throws IOException {
+        // Create network
+        CreateNetwork flow = new CreateNetwork();
+        networkOperator.startFlow(flow);
+        network.runNetwork();
+        MembershipState storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData();
+        String networkId = storedMembershipState.getNetworkId();
+        // TextileFirm request join
+        RequestMembership requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        textileFirm.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        UniqueIdentifier textileFirmMembershipId = storedMembershipState.getLinearId();
+        // Certifier request join
+        requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        certifier.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(2).getState().getData();
+        UniqueIdentifier certifierMembershipId = storedMembershipState.getLinearId();
+        // Activate TextileFirm membership
+        /*ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork(); */
+        // Activate Certifier membership
+        ActivateMember activateMemberFlow = new ActivateMember(certifierMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+        // Create network subgroup
+        UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, certifierMembershipId)));
+        networkOperator.startFlow(createNetworkSubGroupFlow);
+        network.runNetwork();
+        // Assign business identity to TextileFirm
+        AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("TextileFirm", textileFirmMembershipId, "PRATOT65LWD");
+        networkOperator.startFlow(assignBNIdentityFlow);
+        network.runNetwork();
+        // Assign business identity to Certifier
+        assignBNIdentityFlow = new AssignBNIdentity("Certifier", certifierMembershipId, "PRATOC45CRT");
+        networkOperator.startFlow(assignBNIdentityFlow);
+        network.runNetwork();
+        // Assign sharing permissions to TextileFirm
+        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        network.runNetwork();
+        // Send waste water data from TextileFirm to Certifier
+        try {
+            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            network.runNetwork();
+        }catch (Exception e){
+            assertEquals("$sender is not active member of Business Network with $networkId ID", e.getMessage());
+        }
+    }
+    @Test
+    public void sendWasteWaterDataErrors2Test() throws IOException {
+        // Create network
+        CreateNetwork flow = new CreateNetwork();
+        networkOperator.startFlow(flow);
+        network.runNetwork();
+        MembershipState storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData();
+        String networkId = storedMembershipState.getNetworkId();
+        // TextileFirm request join
+        RequestMembership requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        textileFirm.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(1).getState().getData();
+        UniqueIdentifier textileFirmMembershipId = storedMembershipState.getLinearId();
+        // Certifier request join
+        requestMembershipFlow = new RequestMembership(networkOperator.getInfo().getLegalIdentities().get(0), networkId);
+        certifier.startFlow(requestMembershipFlow);
+        network.runNetwork();
+        storedMembershipState = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(2).getState().getData();
+        UniqueIdentifier certifierMembershipId = storedMembershipState.getLinearId();
+        // Activate TextileFirm membership
+        ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+        // Activate Certifier membership
+        activateMemberFlow = new ActivateMember(certifierMembershipId);
+        networkOperator.startFlow(activateMemberFlow);
+        network.runNetwork();
+        // Create network subgroup
+        UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
+                .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, certifierMembershipId)));
+        networkOperator.startFlow(createNetworkSubGroupFlow);
+        network.runNetwork();
+        // Assign business identity to TextileFirm
+        AssignBNIdentity assignBNIdentityFlow = new AssignBNIdentity("Certifier", textileFirmMembershipId, "PRATOT65LWD");
+        networkOperator.startFlow(assignBNIdentityFlow);
+        network.runNetwork();
+        // Assign business identity to Certifier
+        assignBNIdentityFlow = new AssignBNIdentity("Certifier", certifierMembershipId, "PRATOC45CRT");
+        networkOperator.startFlow(assignBNIdentityFlow);
+        network.runNetwork();
+        // Assign sharing permissions to TextileFirm
+        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        network.runNetwork();
+        // Send waste water data from TextileFirm to Certifier
+        try {
+            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            network.runNetwork();
+        }catch (Exception e){
+            assertEquals("$sender business identity should be TextileFirmIdentity", e.getMessage());
+        }
     }
 
     @Test
@@ -999,7 +1191,7 @@ public class FlowTests {
         AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
-        // Send textile data from TextileFirm to Certifier
+        // Send wastewater data from TextileFirm to Certifier
         SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendTextileDataInitiatorFlow);
         network.runNetwork();
@@ -1016,7 +1208,7 @@ public class FlowTests {
                 "SMC1_chlorides - dyeingValue actual: 1400.0 limit: 1200.0\n" +
                 "SMC1_zink - dyeingValue actual: 1.9 limit: 1.0\n");
         assertEquals(storedCertState.isCertified(), false);
-        // Send more textile data from TextileFirm to Certifier
+        // Send more wastewater data from TextileFirm to Certifier
         sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), CORRECT_WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendTextileDataInitiatorFlow);
         network.runNetwork();
@@ -1053,19 +1245,19 @@ public class FlowTests {
         network.runNetwork();
         storedMembershipState = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(2).getState().getData();
-        UniqueIdentifier municiaplityMembershipId = storedMembershipState.getLinearId();
+        UniqueIdentifier municipalityMembershipId = storedMembershipState.getLinearId();
         // Activate TextileFirm membership
         ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
         networkOperator.startFlow(activateMemberFlow);
         network.runNetwork();
         // Activate Municipality membership
-        activateMemberFlow = new ActivateMember(municiaplityMembershipId);
+        activateMemberFlow = new ActivateMember(municipalityMembershipId);
         networkOperator.startFlow(activateMemberFlow);
         network.runNetwork();
         // Create network subgroup
         UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
-        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, municiaplityMembershipId)));
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, municipalityMembershipId)));
         networkOperator.startFlow(createNetworkSubGroupFlow);
         network.runNetwork();
         // Assign business identity to TextileFirm
@@ -1073,14 +1265,14 @@ public class FlowTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign business identity to Municipality
-        assignBNIdentityFlow = new AssignBNIdentity("Municipality", municiaplityMembershipId, "PRATOC45MUN");
+        assignBNIdentityFlow = new AssignBNIdentity("Municipality", municipalityMembershipId, "PRATOC45MUN");
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
         AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
-        // Send textile data from TextileFirm to Municipality
+        // Send wastewater data from TextileFirm to Municipality
         SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
@@ -1127,7 +1319,7 @@ public class FlowTests {
         network.runNetwork();
         storedMembershipState = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(4).getState().getData();
-        UniqueIdentifier municiaplityMembershipId = storedMembershipState.getLinearId();
+        UniqueIdentifier municipalityMembershipId = storedMembershipState.getLinearId();
         // Activate TextileFirm membership
         ActivateMember activateMemberFlow = new ActivateMember(textileFirmMembershipId);
         networkOperator.startFlow(activateMemberFlow);
@@ -1141,13 +1333,13 @@ public class FlowTests {
         networkOperator.startFlow(activateMemberFlow);
         network.runNetwork();
         // Activate Municipality membership
-        activateMemberFlow = new ActivateMember(municiaplityMembershipId);
+        activateMemberFlow = new ActivateMember(municipalityMembershipId);
         networkOperator.startFlow(activateMemberFlow);
         network.runNetwork();
         // Create network subgroup
         UniqueIdentifier networkOperatorMembershipId = networkOperator.getServices().getVaultService()
                 .queryBy(MembershipState.class).getStates().get(0).getState().getData().getLinearId();
-        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, textileFirm2MembershipId, textileFirm3MembershipId, municiaplityMembershipId)));
+        CreateNetworkSubGroup createNetworkSubGroupFlow = new CreateNetworkSubGroup(networkId, "GroupName", new HashSet<UniqueIdentifier>(Arrays.asList(networkOperatorMembershipId, textileFirmMembershipId, textileFirm2MembershipId, textileFirm3MembershipId, municipalityMembershipId)));
         networkOperator.startFlow(createNetworkSubGroupFlow);
         network.runNetwork();
         // Assign business identity to TextileFirm
@@ -1163,7 +1355,7 @@ public class FlowTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign business identity to Municipality
-        assignBNIdentityFlow = new AssignBNIdentity("Municipality", municiaplityMembershipId, "PRATOC45MUN");
+        assignBNIdentityFlow = new AssignBNIdentity("Municipality", municipalityMembershipId, "PRATOC45MUN");
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
@@ -1178,7 +1370,7 @@ public class FlowTests {
         assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirm3MembershipId, networkId);
         networkOperator.startFlow(assignTextileDataSharingRoleFlow);
         network.runNetwork();
-        // Send textile data from TextileFirm to Municipality
+        // Send wastewater data from TextileFirm to Municipality
         SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", WASTEWATER_DATA_MOCK);
         textileFirm.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
@@ -1200,7 +1392,7 @@ public class FlowTests {
         textileFirm3.startFlow(sendWasteRequestInitiator);
         network.runNetwork();
 
-        SendWasteResponse.SendWasteResponseInitiator sendWasteResponseInitiator = new SendWasteResponse.SendWasteResponseInitiator(networkId, municiaplityMembershipId, textileFirm.getInfo().identityFromX500Name(CordaX500Name.parse("O=TextileManufacturer1,L=Prato,C=IT")));
+        SendWasteResponse.SendWasteResponseInitiator sendWasteResponseInitiator = new SendWasteResponse.SendWasteResponseInitiator(networkId, municipalityMembershipId, textileFirm.getInfo().identityFromX500Name(CordaX500Name.parse("O=TextileManufacturer1,L=Prato,C=IT")));
         municipality.startFlow(sendWasteResponseInitiator);
         network.runNetwork();
 
