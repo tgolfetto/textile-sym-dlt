@@ -105,19 +105,19 @@ flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, s
 - send: false --> A firm wish to receive the waste material 
 
 ```
-flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
+flow start SendWasteRequestInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
 ```
 
 **Step 14:** Municipality can communicate to a textile firm which other firms in the network can provide the waste material the need to receive with the related pollution data
 
 ```
-flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
+flow start SendWasteResponseInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
 ```
 **Step 15:** Query the states from nodes
 
 It's possible to query the following states in order to retrieve all the information exchanged with the previous flows, query has to be performed on the node containing it as for R3 Corda documentation:
 - CertificationState
-- TextileDataState
+- WasteWaterDataState
 - WasteRequestState
 - WasteResponseState
 ```
