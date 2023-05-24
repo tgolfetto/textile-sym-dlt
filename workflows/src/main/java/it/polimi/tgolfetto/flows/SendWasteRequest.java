@@ -1,7 +1,6 @@
 package it.polimi.tgolfetto.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import it.polimi.tgolfetto.contracts.TextileDataContract;
 import it.polimi.tgolfetto.contracts.WasteRequestContract;
 import it.polimi.tgolfetto.states.*;
 import net.corda.bn.flows.BNService;

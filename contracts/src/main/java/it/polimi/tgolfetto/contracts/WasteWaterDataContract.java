@@ -7,7 +7,7 @@ import net.corda.core.transactions.LedgerTransaction;
 import org.jetbrains.annotations.NotNull;
 import net.corda.bn.states.MembershipState;
 import net.corda.core.identity.Party;
-import it.polimi.tgolfetto.states.TextileDataState;
+import it.polimi.tgolfetto.states.WasteWaterDataState;
 import it.polimi.tgolfetto.states.CertifierIdentity;
 import it.polimi.tgolfetto.states.MunicipalityIdentity;
 
@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
-public class TextileDataContract implements Contract {
+public class WasteWaterDataContract implements Contract {
 
     public static final String TextileDataContract_ID = "it.polimi.tgolfetto.textile-sym-dlt.contracts.TextileDataContract";
 
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
         CommandData command = tx.getCommands().get(0).getValue();
-        TextileDataState output = (TextileDataState) tx.getOutputs().get(0).getData();
+        WasteWaterDataState output = (WasteWaterDataState) tx.getOutputs().get(0).getData();
         if (command instanceof Commands.Issue){
             verifyIssue(tx,output.getNetworkId(), output.getSender(), output.getReceiver());
         }else{

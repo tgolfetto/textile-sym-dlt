@@ -14,10 +14,10 @@ import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
-import it.polimi.tgolfetto.contracts.TextileDataContract;
+import it.polimi.tgolfetto.contracts.WasteWaterDataContract;
 import it.polimi.tgolfetto.states.CertifierIdentity;
 import it.polimi.tgolfetto.states.MunicipalityIdentity;
-import it.polimi.tgolfetto.states.TextileDataState;
+import it.polimi.tgolfetto.states.WasteWaterDataState;
 import it.polimi.tgolfetto.states.TextileFirmIdentity;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,12 +60,12 @@ public class SendWasteWaterData {
             // Obtain a reference to a notary we wish to use.
             final Party notary = getServiceHub().getNetworkMapCache().getNotaryIdentities().get(0);
             businessNetworkFullVerification(this.networkId, getOurIdentity(), this.receiver);
-            TextileDataState outputState = null;
-            outputState = new TextileDataState(getOurIdentity(), this.senderId, this.receiver, networkId, this.jsonData);
+            WasteWaterDataState outputState = null;
+            outputState = new WasteWaterDataState(getOurIdentity(), this.senderId, this.receiver, networkId, this.jsonData);
             BNService bnService = getServiceHub().cordaService(BNService.class);
             TransactionBuilder txBuilder = new TransactionBuilder(notary)
                     .addOutputState(outputState)
-                    .addCommand(new TextileDataContract.Commands.Issue(), Arrays.asList(getOurIdentity().getOwningKey(), receiver.getOwningKey()))
+                    .addCommand(new WasteWaterDataContract.Commands.Issue(), Arrays.asList(getOurIdentity().getOwningKey(), receiver.getOwningKey()))
                     .addReferenceState(new ReferencedStateAndRef<>(Objects.requireNonNull(bnService.getMembership(networkId, getOurIdentity()))))
                     .addReferenceState(new ReferencedStateAndRef<>(Objects.requireNonNull(bnService.getMembership(networkId, receiver))
                     ));
@@ -156,15 +156,15 @@ public class SendWasteWaterData {
                 @Override
                 protected void checkTransaction(SignedTransaction stx) throws FlowException {
                     Command command = stx.getTx().getCommands().get(0);
-                    if (!(command.getValue() instanceof TextileDataContract.Commands.Issue)){
+                    if (!(command.getValue() instanceof WasteWaterDataContract.Commands.Issue)){
                         throw new FlowException("Only TextileDataContract.Commands.Issue command is allowed");
                     }
 
-                    TextileDataState textileDataState = (TextileDataState) stx.getTx().getOutputStates().get(0);
-                    if (!(textileDataState.getSender().equals(otherPartySession.getCounterparty()))){
+                    WasteWaterDataState wasteWaterDataState = (WasteWaterDataState) stx.getTx().getOutputStates().get(0);
+                    if (!(wasteWaterDataState.getSender().equals(otherPartySession.getCounterparty()))){
                         throw new FlowException("Sender doesn't match sender's identity");
                     }
-                    if(!(textileDataState.getReceiver().equals(getOurIdentity()))){
+                    if(!(wasteWaterDataState.getReceiver().equals(getOurIdentity()))){
                         throw new FlowException("Receiver doesn't match receiver's identity");
                     }
                 }

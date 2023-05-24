@@ -90,7 +90,7 @@ flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, sen
 ```
 **Step 11:** Query the state from the Certifier node.
 ```
-run vaultQuery contractStateType: it.polimi.tgolfetto.states.TextileDataState
+run vaultQuery contractStateType: it.polimi.tgolfetto.states.WasteWaterDataState
 ```
 **Step 12:** Certifier realease a checks criteria for a textile firm data and eventually release a certification
 

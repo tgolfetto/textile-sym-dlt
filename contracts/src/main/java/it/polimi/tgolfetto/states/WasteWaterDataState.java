@@ -1,6 +1,6 @@
 package it.polimi.tgolfetto.states;
 
-import it.polimi.tgolfetto.contracts.TextileDataContract;
+import it.polimi.tgolfetto.contracts.WasteWaterDataContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -13,8 +13,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-@BelongsToContract(TextileDataContract.class)
-public class TextileDataState implements LinearState, Serializable {
+@BelongsToContract(WasteWaterDataContract.class)
+public class WasteWaterDataState implements LinearState, Serializable {
     private final Party sender;
     private final UniqueIdentifier senderId;
     private final Party receiver;
@@ -22,7 +22,7 @@ public class TextileDataState implements LinearState, Serializable {
     private final String jsonData;
 
     @ConstructorForDeserialization
-    public TextileDataState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String jsonData) {
+    public WasteWaterDataState(Party sender, UniqueIdentifier senderId, Party receiver, String networkId, String jsonData) {
         this.sender = sender;
         this.receiver = receiver;
         this.networkId = networkId;

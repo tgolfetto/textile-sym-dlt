@@ -58,7 +58,7 @@ public class SendCertification {
         @Override
         @Suspendable
         public SignedTransaction call() throws FlowException {
-            List<StateAndRef<TextileDataState>> states = getServiceHub().getVaultService().queryBy(TextileDataState.class).getStates();
+            List<StateAndRef<WasteWaterDataState>> states = getServiceHub().getVaultService().queryBy(WasteWaterDataState.class).getStates();
             WasteWaterData[] wasteWaterData = states.stream().filter(state -> state.getState().getData().getSender().equals(receiver)).map(state -> {
                 try {
                     return WasteWaterData.fromJson(state.getState().getData().getJsonData());
