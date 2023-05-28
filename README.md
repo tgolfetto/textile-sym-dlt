@@ -73,7 +73,7 @@ flow start AssignBNIdentity firmType: Municipality, membershipId: <xxxx-xxxx-MUN
 ```
 **Step 9:** Admin assign business identity related ROLE to the member.
 ```
-flow start AssignTextileDataSharingRole membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>
+flow start AssignWasteWaterDataSharingRole membershipId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>
 ```
 Now to see our membership states, we can run these vault queries.
 ```
@@ -84,9 +84,9 @@ run vaultQuery contractStateType: net.corda.bn.states.MembershipState
 
 **Step 10:** A textile firm will share data to the certifier. The flow initiator (the textile manufacturer) has to be a member of the Business network, has to have a TextileFirmIdentity, the permission to share data.
 
-[JSON-TEXTILE-DATA](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/TEXTILE_DATA_MOCK.json) contains a mock json with the structure to share textile pollution data retrieved with sensors along the production process
+[JSON-WASTEWATER-DATA](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/WASTEWATER_DATA_MOCK.json) contains a mock json with the structure to share textile pollution data retrieved with sensors along the production process
 ```
-flow start SendTextileDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, jsonData: <JSON-TEXTILE-DATA>
+flow start SendWasteWaterDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-CERTIFIER-ID-xxxxx>, jsonData: <JSON-WASTEWATER-DATA>
 ```
 **Step 11:** Query the state from the Certifier node.
 ```
@@ -105,13 +105,13 @@ flow start SendCertificationInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, s
 - send: false --> A firm wish to receive the waste material 
 
 ```
-flow start SendWasteRequestInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
+flow start SendWasteRequestInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-WASTEWATER-DATA>
 ```
 
 **Step 14:** Municipality can communicate to a textile firm which other firms in the network can provide the waste material the need to receive with the related pollution data
 
 ```
-flow start SendWasteResponseInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-TEXTILE-DATA>
+flow start SendWasteResponseInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, senderId: <xxxx-xxxx-TEXTILEFIRM-ID-xxxxx>, receiver: <xxxx-xxxx-MUNICIPALITY-ID-xxxxx>, send: true, qty: 100, wasteName: water, wasteWaterData: <JSON-WASTEWATER-DATA>
 ```
 **Step 15:** Query the states from nodes
 
