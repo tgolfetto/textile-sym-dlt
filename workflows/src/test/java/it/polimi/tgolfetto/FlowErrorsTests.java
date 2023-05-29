@@ -3,12 +3,9 @@ package it.polimi.tgolfetto;
 import com.google.common.collect.ImmutableList;
 import it.polimi.tgolfetto.flows.SendCertification;
 import it.polimi.tgolfetto.flows.SendWasteRequest;
-import it.polimi.tgolfetto.flows.SendWasteResponse;
 import it.polimi.tgolfetto.flows.SendWasteWaterData;
 import it.polimi.tgolfetto.flows.membershipFlows.*;
-import it.polimi.tgolfetto.states.*;
 import net.corda.bn.states.MembershipState;
-import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.node.NetworkParameters;
@@ -23,8 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 
@@ -529,13 +524,13 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send waste water data from TextileFirm to Certifier
         try {
-            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
-            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            SendWasteWaterData.SendWasteWaterDataInitiator sendWasteWaterDataInitiatorFlow = new SendWasteWaterData.SendWasteWaterDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendWasteWaterDataInitiatorFlow);
             network.runNetwork();
         } catch (Exception e) {
             assertEquals("$sender is not member of Business Network with $networkId ID", e.getMessage());
@@ -584,13 +579,13 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send waste water data from TextileFirm to Certifier
         try {
-            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
-            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            SendWasteWaterData.SendWasteWaterDataInitiator sendWasteWaterDataInitiatorFlow = new SendWasteWaterData.SendWasteWaterDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendWasteWaterDataInitiatorFlow);
             network.runNetwork();
         } catch (Exception e) {
             assertEquals("$receiver is not active member of Business Network with $networkId ID", e.getMessage());
@@ -643,13 +638,13 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send waste water data from TextileFirm to Certifier
         try {
-            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
-            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            SendWasteWaterData.SendWasteWaterDataInitiator sendWasteWaterDataInitiatorFlow = new SendWasteWaterData.SendWasteWaterDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendWasteWaterDataInitiatorFlow);
             network.runNetwork();
         } catch (Exception e) {
             assertEquals("$receiver is not member of Business Network with $networkId ID", e.getMessage());
@@ -689,8 +684,8 @@ public class FlowErrorsTests {
         // Send waste water data from TextileFirm to Certifier
         try {
             UniqueIdentifier textileFirmMembershipId = new UniqueIdentifier("FakeId");
-            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
-            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            SendWasteWaterData.SendWasteWaterDataInitiator sendWasteWaterDataInitiatorFlow = new SendWasteWaterData.SendWasteWaterDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendWasteWaterDataInitiatorFlow);
             network.runNetwork();
         } catch (Exception e) {
             assertEquals("$receiver is not member of Business Network with $networkId ID", e.getMessage());
@@ -728,13 +723,13 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send waste water data from TextileFirm to Certifier
         try {
-            SendWasteWaterData.SendTextileDataInitiator sendTextileDataInitiatorFlow = new SendWasteWaterData.SendTextileDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
-            textileFirm.startFlow(sendTextileDataInitiatorFlow);
+            SendWasteWaterData.SendWasteWaterDataInitiator sendWasteWaterDataInitiatorFlow = new SendWasteWaterData.SendWasteWaterDataInitiator(networkId, textileFirmMembershipId, certifier.getInfo().identityFromX500Name(CordaX500Name.parse("O=Certifier,L=Zurich,C=CH")), WASTEWATER_DATA_MOCK);
+            textileFirm.startFlow(sendWasteWaterDataInitiatorFlow);
             network.runNetwork();
         } catch (Exception e) {
             assertEquals("$receiver is not member of Business Network with $networkId ID", e.getMessage());
@@ -783,8 +778,8 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Issue another certification from Certifier to TextileFirm
         try {
@@ -838,8 +833,8 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send certification from Certifier to TextileFirm
         try {
@@ -974,8 +969,8 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         try {
             // Send wastewater data from TextileFirm to Municipality
@@ -1029,8 +1024,8 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         try {
             // Send wastewater data from TextileFirm to Municipality
@@ -1115,8 +1110,8 @@ public class FlowErrorsTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         try {
             // Send wastewater data from TextileFirm to Municipality

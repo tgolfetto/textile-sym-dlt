@@ -1,14 +1,11 @@
 package it.polimi.tgolfetto;
 
 import com.google.common.collect.ImmutableList;
-import it.polimi.tgolfetto.flows.SendCertification;
 import it.polimi.tgolfetto.flows.SendWasteRequest;
 import it.polimi.tgolfetto.flows.SendWasteResponse;
-import it.polimi.tgolfetto.flows.SendWasteWaterData;
 import it.polimi.tgolfetto.flows.membershipFlows.*;
 import it.polimi.tgolfetto.states.*;
 import net.corda.bn.states.MembershipState;
-import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.node.NetworkParameters;
@@ -23,8 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 
@@ -773,8 +768,8 @@ public class FlowReqResTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send wastewater data from TextileFirm to Municipality
         SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", WASTEWATER_DATA_MOCK);
@@ -863,16 +858,16 @@ public class FlowReqResTests {
         networkOperator.startFlow(assignBNIdentityFlow);
         network.runNetwork();
         // Assign sharing permissions to TextileFirm
-        AssignTextileDataSharingRole assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirmMembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        AssignWasteWaterDataSharingRole assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirmMembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
 
-        assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirm2MembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirm2MembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
 
-        assignTextileDataSharingRoleFlow = new AssignTextileDataSharingRole(textileFirm3MembershipId, networkId);
-        networkOperator.startFlow(assignTextileDataSharingRoleFlow);
+        assignWasteWaterDataSharingRoleFlow = new AssignWasteWaterDataSharingRole(textileFirm3MembershipId, networkId);
+        networkOperator.startFlow(assignWasteWaterDataSharingRoleFlow);
         network.runNetwork();
         // Send wastewater data from TextileFirm to Municipality
         SendWasteRequest.SendWasteRequestInitiator sendWasteRequestInitiator = new SendWasteRequest.SendWasteRequestInitiator(networkId, textileFirmMembershipId, municipality.getInfo().identityFromX500Name(CordaX500Name.parse("O=Municipality,L=Prato,C=IT")), true, 100, "wastewater", WASTEWATER_DATA_MOCK);

@@ -9,7 +9,6 @@ import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.FlowException;
 import net.corda.core.flows.FlowLogic;
 import net.corda.core.flows.StartableByRPC;
-import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import it.polimi.tgolfetto.states.TextileFirmIdentity;
@@ -18,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @StartableByRPC
-public class AssignTextileDataSharingRole extends FlowLogic<SignedTransaction> {
+public class AssignWasteWaterDataSharingRole extends FlowLogic<SignedTransaction> {
 
     private final UniqueIdentifier membershipId;
     private final String networkId;
@@ -28,7 +27,7 @@ public class AssignTextileDataSharingRole extends FlowLogic<SignedTransaction> {
      * @param membershipId
      * @param networkId
      */
-    public AssignTextileDataSharingRole(UniqueIdentifier membershipId, String networkId) {
+    public AssignWasteWaterDataSharingRole(UniqueIdentifier membershipId, String networkId) {
         this.membershipId = membershipId;
         this.networkId = networkId;
     }

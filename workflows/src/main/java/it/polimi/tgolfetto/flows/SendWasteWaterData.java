@@ -30,7 +30,7 @@ public class SendWasteWaterData {
 
     @InitiatingFlow
     @StartableByRPC
-    public static class SendTextileDataInitiator extends FlowLogic<SignedTransaction> {
+    public static class SendWasteWaterDataInitiator extends FlowLogic<SignedTransaction> {
 
         private final String networkId;
 
@@ -47,7 +47,7 @@ public class SendWasteWaterData {
          * @param receiver
          * @param jsonData
          */
-        public SendTextileDataInitiator(String networkId, UniqueIdentifier senderId, Party receiver, String jsonData) {
+        public SendWasteWaterDataInitiator(String networkId, UniqueIdentifier senderId, Party receiver, String jsonData) {
             this.networkId = networkId;
             this.senderId = senderId;
             this.receiver = receiver;
@@ -136,7 +136,7 @@ public class SendWasteWaterData {
 
     }
 
-    @InitiatedBy(SendTextileDataInitiator.class)
+    @InitiatedBy(SendWasteWaterDataInitiator.class)
     public static class Acceptor extends FlowLogic<SignedTransaction> {
 
         private final FlowSession otherPartySession;
