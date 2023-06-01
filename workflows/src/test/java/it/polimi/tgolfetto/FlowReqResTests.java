@@ -700,14 +700,6 @@ public class FlowReqResTests {
         );
 
         network = new MockNetwork(mockNetworkParameters);
-        /*
-        network = new MockNetwork(mockNetworkParameters.withThreadPerNode(false).withCordappsForAllNodes(ImmutableList.of(
-                        TestCordapp.findCordapp("it.polimi.tgolfetto.contracts"),
-                        TestCordapp.findCordapp("it.polimi.tgolfetto.flows"),
-                        TestCordapp.findCordapp("net.corda.bn.flows"),
-                        TestCordapp.findCordapp("net.corda.bn.states")))
-                .withNotarySpecs(ImmutableList.of(new MockNetworkNotarySpec(CordaX500Name.parse("O=Notary,L=Rome,C=IT"))))
-        );*/
         networkOperator = network.createPartyNode(CordaX500Name.parse("O=NetworkOperator,L=Milan,C=IT"));
         textileFirm = network.createPartyNode(CordaX500Name.parse("O=TextileManufacturer1,L=Prato,C=IT"));
         textileFirm2 = network.createPartyNode(CordaX500Name.parse("O=TextileManufacturer2,L=Prato,C=IT"));

@@ -71,7 +71,7 @@ public class WasteWaterData implements Serializable {
         try {
             return new WasteWaterData(new SMC(result.get("SMC1_cod")), new SMC(result.get("SMC1_bod")), new SMC(result.get("SMC1_chlorides")), new SMC(result.get("SMC1_tkn")), new SMC(result.get("SMC1_sulphates")), new SMC(result.get("SMC1_zink")), new SMC(result.get("SMC1_copper")), new SMC(result.get("SMC1_arsenic")), new SMC(result.get("SMC1_sodium")), new SMC(result.get("SMC2_ph")), new SMC(result.get("SMC2_temperature")), new SMC(result.get("SMC5_oilAndGrease")), new SMC(result.get("SMC5_tds")));
         } catch (NullPointerException e) {
-            throw new NullPointerException("TextileData invalid JSON, missing some field!");
+            throw new NullPointerException("WasteWaterData invalid JSON, missing some field!");
         }
     }
 

@@ -3,11 +3,6 @@ Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textil
 
 ![Screenshot](TexSymDLT.png)
 
-### TODO:
-- finish to write and publish related thesis paper
-- test with terminal the big json data flows
-- write contract and state tests
-
 ### Usage
 
 #### Running the CorDapp
@@ -92,7 +87,7 @@ flow start SendWasteWaterDataInitiator networkId: <xxxx-xxxx-NETWORK-ID-xxxxx>, 
 ```
 run vaultQuery contractStateType: it.polimi.tgolfetto.states.WasteWaterDataState
 ```
-**Step 12:** Certifier realease a checks criteria for a textile firm data and eventually release a certification
+**Step 12:** Certifier release a checks criteria for a textile firm data and eventually release a certification
 
 [JSON-CERT-CRITERIA](https://github.com/tgolfetto/textile-sym-dlt/blob/main/workflows/src/test/java/it/polimi/tgolfetto/CERTIFICATION_CRITERIA_MOCK.json) contains a mock json with the structure with limits related to the pollution data for getting a certification
 ```
