@@ -1,5 +1,7 @@
 ### TexSymDLT: Digital Ledger Technology for Textile Wastewater Industrial Symbiosis
-Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in textile manufacturing districts
+Digital Ledger Technology with R3 Corda to foster Industrial Symbiosis in Textile Manufacturing Districts
+
+[Disseration explaining the project](https://github.com/tgolfetto/textile-sym-dlt/blob/main/Tesi___Golfetto_Thomas%20(11).pdf)
 
 ![Screenshot](TexSymDLT.png)
 
